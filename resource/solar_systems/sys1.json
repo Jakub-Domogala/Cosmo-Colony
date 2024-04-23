@@ -1,0 +1,90 @@
+{
+  "planets": [
+    {
+      "name": "Mercury",
+      "x": 100,
+      "y": 100,
+      "radius": 10
+    },
+    {
+      "name": "Venus",
+      "x": 200,
+      "y": 200,
+      "radius": 20
+    },
+    {
+      "name": "Earth",
+      "x": 250,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "Mars",
+      "x": 400,
+      "y": 200,
+      "radius": 40
+    },
+    {
+      "name": "Jupiter",
+      "x": 300,
+      "y": 450,
+      "radius": 20
+    },
+    {
+      "name": "Saturn",
+      "x": 600,
+      "y": 250,
+      "radius": 40
+    },
+    {
+      "name": "Uranus",
+      "x": 500,
+      "y": 350,
+      "radius": 20
+    },
+    {
+      "name": "Neptune",
+      "x": 500,
+      "y": 600,
+      "radius": 30
+    }
+  ],
+  "connections": [
+    {
+      "A": "Mercury",
+      "B": "Venus"
+    },
+    {
+      "A": "Venus",
+      "B": "Earth"
+    },
+    {
+      "A": "Earth",
+      "B": "Mars"
+    },
+    {
+      "A": "Mars",
+      "B": "Saturn"
+    },
+    {
+      "A": "Earth",
+      "B": "Uranus"
+    },
+    {
+      "A": "Saturn",
+      "B": "Uranus"
+    },
+    {
+      "A": "Uranus",
+      "B": "Neptune"
+    },
+    {
+      "A": "Neptune",
+      "B": "Jupiter"
+    },
+    {
+      "A": "Jupiter",
+      "B": "Earth"
+    }
+  ]
+}
