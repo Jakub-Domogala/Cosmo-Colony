@@ -50,14 +50,14 @@ export default class Spaceship {
     // calculate the rotation angle of the spaceship
     const angle = Math.atan2(B.y - A.y, B.x - A.x);
     const rotation = angle - Math.PI / 2;
-    console.log(rotation);
-    console.log(x, y);
+    // console.log(rotation);
+    // console.log(x, y);
     return [x, y, rotation];
   }
 
   make_sprite() {
     this.sprite = new PIXI.Sprite(PIXI.Texture.RED); // placeholder texture
-    console.log(this.current_cordinates);
+    // console.log(this.current_cordinates);
     this.sprite.x = this.current_cordinates[0];
     this.sprite.y = this.current_cordinates[1];
     this.sprite.anchor.set(0.5);

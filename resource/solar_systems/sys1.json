@@ -15,43 +15,43 @@
     },
     {
       "name": "Venus",
-      "x": 200,
-      "y": 200,
+      "x": 400,
+      "y": 100,
       "radius": 20
     },
     {
       "name": "Earth",
-      "x": 250,
+      "x": 350,
       "y": 300,
       "radius": 30
     },
     {
       "name": "Mars",
-      "x": 400,
+      "x": 600,
       "y": 200,
       "radius": 40
     },
     {
       "name": "Jupiter",
-      "x": 300,
-      "y": 450,
+      "x": 500,
+      "y": 500,
       "radius": 20
     },
     {
       "name": "Saturn",
-      "x": 600,
+      "x": 900,
       "y": 250,
       "radius": 40
     },
     {
       "name": "Uranus",
-      "x": 500,
-      "y": 350,
+      "x": 750,
+      "y": 400,
       "radius": 20
     },
     {
       "name": "Neptune",
-      "x": 500,
+      "x": 700,
       "y": 600,
       "radius": 30
     }

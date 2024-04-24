@@ -1,3 +1,6 @@
+// star_system.js
+
+import * as PIXI from "pixi.js";
 import Planet from "./planet";
 import Connection from "./connection";
 
@@ -8,7 +11,13 @@ export default class StarSystem {
     this._planets_dict = {};
     this._circleTexture = circleTexture;
     this.connections = [];
+    this.draggedPlanet = null;
+    this.targetPlanet = null;
     this.createMap();
+
+    // pointer line when dragging
+    this.pointer = new PIXI.Graphics();
+    this.app.stage.addChild(this.pointer);
   }
 
   get data() {
@@ -55,6 +64,7 @@ export default class StarSystem {
   }
 
   createPlanets(planets) {
+    // console.log("star system createPlanets", this.onPlanetDrag);
     for (let i = 0; i < planets.length; i++) {
       let new_planet = new Planet(
         planets[i].name,
@@ -65,6 +75,7 @@ export default class StarSystem {
         "alive",
         this.app,
         this.circleTexture,
+        this,
       );
       this._planets_dict[new_planet.name] = new_planet;
     }
@@ -74,5 +85,76 @@ export default class StarSystem {
     for (let planet in this._planets_dict) {
       this.app.stage.addChild(this._planets_dict[planet].sprite);
     }
+  }
+
+  onPlanetDrag(planet) {
+    console.log("star system onPlanetDrag");
+    // Store a reference to the dragged planet
+    this.draggedPlanet = planet;
+    // Reduce transparency while dragging
+    planet.sprite.alpha = 0.5;
+    // Listen for mouse move events to update the position of the dragged planet
+    // console.log("SHOULD BE STAR SYSTEM", this);
+    // console.log("SHOULD BE STAR SYSTEM onDragMove", this.onDragMove);
+    // console.log("SHOULD BE STAR SYSTEM onDragEnd", this.onDragEnd);
+    console.log(this.app);
+    this.app.stage.on("pointermove", this.onDragMove.bind(this));
+    this.app.stage.on("pointerup", this.onDragEnd.bind(this));
+  }
+
+  onDragMove(event) {
+    // console.log("star system onDragMove", event, this.draggedPlanet);
+    if (this.draggedPlanet) {
+      // Move the dragged planet to the mouse position
+      // console.log("star system onDragMove INSIDE", this.draggedPlanet);
+      // this.draggedPlanet.sprite.position.copyFrom(event.data.global);
+
+      this.drawPointer(this.draggedPlanet.sprite.position, event.data.global);
+    }
+  }
+
+  onDragEnd() {
+    // console.log("star system onDragEnd", this);
+    console.log(
+      "star system END DRAG",
+      this.draggedPlanet.name,
+      this.targetPlanet.name,
+    );
+    this.pointer.clear();
+    if (this.draggedPlanet) {
+      // Restore transparency
+      this.draggedPlanet.sprite.alpha = 1;
+      if (this.targetPlanet) {
+        this.targetPlanet.sprite.alpha = 1;
+      }
+      // Remove event listener for mouse move
+      this.app.stage.off("pointermove", this.onDragMove);
+      this.app.stage.off("pointerup", this.onDragEnd);
+      // Clear dragged planet reference
+      this.draggedPlanet = null;
+    }
+  }
+
+  onDragOver(planet) {
+    console.log("star system onDragOver", planet.name);
+    this.targetPlanet = planet;
+    this.targetPlanet.sprite.alpha = 0.5;
+  }
+
+  onDragOut(planet) {
+    console.log("star system onDragOut", planet.name);
+    if (planet != this.draggedPlanet) {
+      // this.draggedPlanet = null;
+      this.targetPlanet.sprite.alpha = 1;
+      this.targetPlanet = null;
+    }
+  }
+
+  drawPointer(positionA, positionB) {
+    this.pointer.clear();
+    this.pointer.moveTo(positionA.x, positionA.y);
+    this.pointer.lineTo(positionB.x, positionB.y);
+    this.pointer.fill();
+    this.pointer.stroke({ width: 2, color: 0x990000 });
   }
 }

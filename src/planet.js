@@ -1,26 +1,36 @@
-import * as PIXI from "pixi.js";
 // planet.js
 
-export default class Planet {
-  constructor(name, x, y, r, color, status, app, cirTex) {
-    this.attack_speed = 1; // constant integer attack speed of the planet
-    this.breed_rate = 1; // constant integer breed rate of the planet
+import * as PIXI from "pixi.js";
 
-    this.name = name; // string name of the planet
-    this._r = r; // constant integer radius of the planet
-    this.x = x; // constant integer coordinate x
-    this.y = y; // constant integer coordinate y
-    this._app = app; // reference to the PIXI application
-    this.color = color; // color of the planet
-    this.status = status; // string status of the planet
-    this.sprite = null; // PIXI sprite object for the planet
+export default class Planet {
+  constructor(name, x, y, r, color, status, app, cirTex, system) {
+    this.attack_speed = 1;
+    this.breed_rate = 1;
+
+    this.name = name;
+    this._r = r;
+    this.x = x;
+    this.y = y;
+    this._app = app;
+    this.color = color;
+    this.status = status;
+    this.sprite = null;
     this._cirTex = cirTex;
-    this.make_sprite(); // create the sprite object
+    this.make_sprite();
     // dict of structure {planet_name: connection_object}
     this.connections_dict = {};
+
+    this.this_system = system;
+
+    this.onMouseDown = this.onMouseDown.bind(this);
+
+    this.sprite.interactive = true;
+    this.sprite.eventMode = "static";
+    this.sprite.addEventListener("pointerdown", this.onMouseDown);
+    this.sprite.addEventListener("pointerover", this.onMouseOver.bind(this));
+    this.sprite.addEventListener("pointerout", this.onMouseOut.bind(this));
   }
 
-  // Getter methods for constants x, y, and r
   get x() {
     return this._x;
   }
@@ -37,7 +47,6 @@ export default class Planet {
     return this._cirTex;
   }
 
-  // Getter methods for color and status
   get color() {
     return this._color;
   }
@@ -46,12 +55,10 @@ export default class Planet {
     return this._status;
   }
 
-  // Getter method for the PIXI application
   get app() {
     return this._app;
   }
 
-  // Setter methods for color and status
   set x(newX) {
     this._x = newX;
     if (this.sprite) {
@@ -74,7 +81,6 @@ export default class Planet {
     this._status = newStatus;
   }
 
-  // Create a PIXI sprite object for the planet
   make_sprite() {
     this.sprite = new PIXI.Sprite(PIXI.Texture.RED); // placeholder texture
     this.sprite.x = this.x;
@@ -85,15 +91,12 @@ export default class Planet {
   }
 
   updateColor() {
-    // Clear the previous graphics
     const circle_texture = new PIXI.Graphics();
     circle_texture.circle(0, 0, this.r);
     circle_texture.fill(this.color);
-    // add planet name abouve texture circle
     this.display_name(circle_texture);
     const texture = this.app.renderer.generateTexture(circle_texture);
     this.sprite.texture = texture;
-    // this.sprite.texture = this.cirTex;
   }
 
   planetTakeover(newColor, newStatus) {
@@ -109,16 +112,6 @@ export default class Planet {
   }
 
   display_name(circle_texture) {
-    // const style = new PIXI.TextStyle({
-    //   fontFamily: "Arial",
-    //   fontSize: 12,
-    //   fill: "white",
-    // });
-    // const name = new PIXI.Text(this.name, style);
-    // name.anchor.set(0.5);
-    // name.x = 0;
-    // // name.y = -this.r - 10;
-    // circle_texture.addChild(name);
     const style = new PIXI.TextStyle({
       fontFamily: "Arial",
       fontSize: 12,
@@ -144,5 +137,28 @@ export default class Planet {
   update() {
     // Update the planet
     // i guess we re only updating the color and health of the planet
+  }
+
+  onMouseDown(event) {
+    console.log("planet onMouseDown");
+    // this.dragging = true;
+    console.log(this.solar_system);
+    if (this.this_system) {
+      this.this_system.onPlanetDrag(this);
+    }
+  }
+
+  onMouseOver(event) {
+    console.log("planet onMouseOver dragging");
+    if (this.this_system) {
+      this.this_system.onDragOver(this);
+    }
+  }
+
+  onMouseOut(event) {
+    console.log("planet onMouseOut dragging");
+    if (this.this_system) {
+      this.this_system.onDragOut(this);
+    }
   }
 }
