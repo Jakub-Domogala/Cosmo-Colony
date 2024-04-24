@@ -1,57 +1,34 @@
-import * as PIXI from "pixi.js";
 // spaceship.js
+
+import * as PIXI from "pixi.js";
 
 export default class Spaceship {
   constructor(id, origin_planet, destination_planet, app) {
     this.ship_size = 10;
     this.speed = 1;
 
-    this._id = id; // integer id of the spaceship
-    this._origin_planet = origin_planet; // list of integers representing the start coordinates of the spaceship
-    this._destination_planet = destination_planet; // list of integers representing the end coordinates of the spaceship
-    this._app = app; // reference to the PIXI application
-    this.sprite = null; // PIXI sprite object for the spaceship
+    this.id = id;
+    this.origin_planet = origin_planet;
+    this.destination_planet = destination_planet;
+    this.app = app;
+    this.sprite = null;
     this.current_cordinates = null;
     this.rotation = null;
 
     let [x, y, r] = this.calculate_start_cordinates_and_rotation();
     this.current_cordinates = [x, y];
     this.rotation = r;
-    this.make_sprite(); // create the sprite object
-  }
-
-  // getters
-
-  get app() {
-    return this._app;
-  }
-
-  get id() {
-    return this._id;
-  }
-
-  get origin_planet() {
-    return this._origin_planet;
-  }
-
-  get destination_planet() {
-    return this._destination_planet;
+    this.make_sprite();
   }
 
   calculate_start_cordinates_and_rotation() {
-    const A = this.origin_planet;
-    const B = this.destination_planet;
+    const [A, B] = [this.origin_planet, this.destination_planet];
     const distance = Math.sqrt((B.x - A.x) ** 2 + (B.y - A.y) ** 2);
-    // offset the spaceship from home planet by its radius
     const offset = 2;
     const x = A.x + ((A.r + offset) * (B.x - A.x)) / distance;
     const y = A.y + ((A.r + offset) * (B.y - A.y)) / distance;
-
-    // calculate the rotation angle of the spaceship
     const angle = Math.atan2(B.y - A.y, B.x - A.x);
     const rotation = angle - Math.PI / 2;
-    // console.log(rotation);
-    // console.log(x, y);
     return [x, y, rotation];
   }
 

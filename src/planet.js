@@ -3,7 +3,7 @@
 import * as PIXI from "pixi.js";
 
 export default class Planet {
-  constructor(name, x, y, r, color, status, app, cirTex, system) {
+  constructor(name, x, y, r, color, status, system) {
     this.attack_speed = 1;
     this.breed_rate = 1;
 
@@ -11,11 +11,10 @@ export default class Planet {
     this._r = r;
     this.x = x;
     this.y = y;
-    this._app = app;
+    this._app = system.app;
     this.color = color;
     this.status = status;
     this.sprite = null;
-    this._cirTex = cirTex;
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
     this.connections_dict = {};
@@ -41,10 +40,6 @@ export default class Planet {
 
   get r() {
     return this._r;
-  }
-
-  get cirTex() {
-    return this._cirTex;
   }
 
   get color() {
@@ -120,12 +115,10 @@ export default class Planet {
     const name = new PIXI.Text({ text: this.name, style });
     name.anchor.set(0.5);
     name.x = 0;
-    // name.y = -this.r - 10;
     circle_texture.addChild(name);
   }
 
   start_sending_ships(destination_planet) {
-    // check for connection
     if (this.connections_dict[destination_planet.name] == undefined) {
       console.log("No connection between planets");
       return;
@@ -141,7 +134,6 @@ export default class Planet {
 
   onMouseDown(event) {
     console.log("planet onMouseDown");
-    // this.dragging = true;
     console.log(this.solar_system);
     if (this.this_system) {
       this.this_system.onPlanetDrag(this);
