@@ -102,8 +102,10 @@ export default class Planet {
     this.updateColor();
   }
 
-  addConnection(planet) {
-    this.connections_dict[planet.name] = planet;
+  addConnection(connection) {
+    let second_planet = connection.planetA;
+    if (connection.planet1 == this) second_planet = connection.planetB;
+    this.connections_dict[second_planet.name] = connection;
   }
 
   display_name(circle_texture) {
@@ -127,5 +129,20 @@ export default class Planet {
     name.x = 0;
     // name.y = -this.r - 10;
     circle_texture.addChild(name);
+  }
+
+  start_sending_ships(destination_planet) {
+    // check for connection
+    if (this.connections_dict[destination_planet.name] == undefined) {
+      console.log("No connection between planets");
+      return;
+    }
+
+    this.connections_dict[destination_planet.name].start_sending_ships(this);
+  }
+
+  update() {
+    // Update the planet
+    // i guess we re only updating the color and health of the planet
   }
 }

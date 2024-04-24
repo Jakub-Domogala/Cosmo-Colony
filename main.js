@@ -2,6 +2,7 @@
 import { Application, Assets } from "pixi.js";
 import Planet from "./src/planet.js";
 import StarSystem from "./src/star_system.js";
+import Spaceship from "./src/spaceship.js";
 
 // import json file named sys1.json
 import sys1 from "./resource/solar_systems/sys1.json";
@@ -45,6 +46,7 @@ import circle_img from "./resource/img/circle.svg";
 
   const circle_png = await Assets.load(circle_img);
 
+  // Example planet
   const planet = new Planet(
     "example",
     app.screen.width / 2,
@@ -57,7 +59,17 @@ import circle_img from "./resource/img/circle.svg";
   );
   app.stage.addChild(planet.sprite);
 
+  // Example spaceship
+
   const starSystem = new StarSystem(sys1, app, circle_png);
+
+  const spaceship = new Spaceship(
+    1,
+    starSystem.planets_dict["Earth"],
+    starSystem.planets_dict["Venus"],
+    app,
+  );
+  app.stage.addChild(spaceship.sprite);
 
   let elapsed = 0.0;
   // make general loop for the game
@@ -73,5 +85,7 @@ import circle_img from "./resource/img/circle.svg";
     // update the physics
     // update the graphics
     // console.log("delta", ticker.deltaTime);
+
+    spaceship.update_position(ticker.deltaTime);
   });
 })();

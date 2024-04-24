@@ -23,6 +23,10 @@ export default class StarSystem {
     return this._circleTexture;
   }
 
+  get planets_dict() {
+    return this._planets_dict;
+  }
+
   createMap() {
     let planetData = this.data;
     this.createPlanets(planetData.planets);
@@ -35,11 +39,11 @@ export default class StarSystem {
 
   createConnections(connections) {
     for (let i = 0; i < connections.length; i++) {
-      let planet1 = this._planets_dict[connections[i].A];
-      let planet2 = this._planets_dict[connections[i].B];
-      planet1.addConnection(planet2);
-      planet2.addConnection(planet1);
-      const new_connection = new Connection(planet1, planet2, this.app);
+      let planetA = this._planets_dict[connections[i].A];
+      let planetB = this._planets_dict[connections[i].B];
+      const new_connection = new Connection(planetA, planetB, this.app);
+      planetA.addConnection(new_connection);
+      planetB.addConnection(new_connection);
       this.connections.push(new_connection);
     }
   }
