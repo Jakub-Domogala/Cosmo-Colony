@@ -38,7 +38,7 @@ import circle_img from "./resource/img/circle.svg";
   const app = new Application();
 
   // Initialize the application
-  await app.init({ background: "#1099bb", resizeTo: window });
+  await app.init({ background: "#061536", resizeTo: window });
 
   // Append the application canvas to the document body
   document.body.appendChild(app.canvas);
@@ -63,8 +63,11 @@ import circle_img from "./resource/img/circle.svg";
   // make general loop for the game
   app.ticker.add((ticker) => {
     elapsed += ticker.deltaTime;
-    // console.log("elapsed", elapsed);
-    planet.x = 500 + 20 * Math.cos(elapsed / 10) + 40 * Math.cos(elapsed / 40);
+    planet.x =
+      500 +
+      20 * Math.cos(elapsed / 10) +
+      40 * Math.cos(elapsed / 40) +
+      200 * Math.cos(elapsed / 100);
     planet.y = 200 + 10 * Math.sin(elapsed / 5) + 40 * Math.sin(elapsed / 40);
     // update the game
     // update the physics

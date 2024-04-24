@@ -1,4 +1,11 @@
 {
+  "universe": {
+    "name": "Solar System",
+    "x": 0,
+    "y": 0,
+    "width": 800,
+    "height": 800
+  },
   "planets": [
     {
       "name": "Mercury",
