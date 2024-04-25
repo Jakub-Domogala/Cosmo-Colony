@@ -65,13 +65,13 @@ import circle_img from "./resource/img/circle.svg";
 
   const starSystem = new StarSystem(sys1, app, circle_png);
 
-  const spaceship = new Spaceship(
-    1,
-    starSystem.planets_dict["Earth"],
-    starSystem.planets_dict["Venus"],
-    app,
-  );
-  app.stage.addChild(spaceship.sprite);
+  // const spaceship = new Spaceship(
+  //   1,
+  //   starSystem.planets_dict["Earth"],
+  //   starSystem.planets_dict["Venus"],
+  //   app,
+  // );
+  // app.stage.addChild(spaceship.sprite);
 
   let elapsed = 0.0;
   // make general loop for the game
@@ -88,6 +88,7 @@ import circle_img from "./resource/img/circle.svg";
     // update the graphics
     // console.log("delta", ticker.deltaTime);
 
-    spaceship.update_position(ticker.deltaTime);
+    // spaceship.update(ticker.deltaTime);
+    starSystem.update(ticker.deltaMS / 1000);
   });
 })();

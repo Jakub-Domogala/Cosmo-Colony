@@ -1,5 +1,5 @@
-const color_success = 0x00ff00;
-const color_fail = 0xff0000;
-const color_neutral = 0x999999;
+const COLOR_SUCCESS = 0x00ff00;
+const COLOR_FAIL = 0xff0000;
+const COLOR_NEUTRAL = 0x999999;
 
-export { color_success, color_fail, color_neutral };
+export { COLOR_SUCCESS, COLOR_FAIL, COLOR_NEUTRAL };

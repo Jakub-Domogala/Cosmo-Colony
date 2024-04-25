@@ -54,7 +54,30 @@ export default class Connection {
   }
 
   start_sending_ships(origin_planet) {
-    destination_planet =
-      origin_planet === this.planetA ? this.planetB : this.planetA;
+    console.log(
+      "start_sending_ships from ",
+      origin_planet.name,
+      " on connection ",
+      this.planetA.name,
+      "---",
+      this.planetB.name,
+    );
+    if (origin_planet != this.planetA && origin_planet != this.planetB)
+      return null;
+    if (origin_planet == this.planetA) {
+      if (this.sendingB2A.ships_id == origin_planet.status)
+        this.sendingB2A.stop_sending_ships();
+      this.sendingA2B.start_sending_ships();
+    }
+    if (origin_planet == this.planetB) {
+      if (this.sendingA2B.ships_id == origin_planet.status)
+        this.sendingA2B.stop_sending_ships();
+      this.sendingB2A.start_sending_ships();
+    }
+  }
+
+  update(delta) {
+    this.sendingA2B.update(delta);
+    this.sendingB2A.update(delta);
   }
 }

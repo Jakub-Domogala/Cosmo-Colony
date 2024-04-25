@@ -1,20 +1,24 @@
 // sending.js
 
+import Spaceship from "./spaceship.js";
+
 export default class Sending {
   constructor(planetA, planetB, app) {
-    this.ships_id = null; // integer id of the ships
-    this.origin_planet = planetA; // reference to the origin planet
-    this.destination_planet = planetB; // reference to the destination planet
-    this.time_elapsed = 0; // integer time elapsed since the start of the sending
-    this.sending_speed = 1; // integer speed of the sending
-    this.ships_queue = []; // list of ships in the sending
-    this._app = app; // reference to the PIXI application
+    this.ships_id = null;
+    this.ships_color = null;
+    this.origin_planet = planetA;
+    this.destination_planet = planetB;
+    this.time_elapsed = 0;
+    this.sending_speed = null;
+    this.ships_queue = [];
+    this._app = app;
   }
 
-  start_sending_ships(ships_id, sending_speed = 1) {
-    this.ships_id = ships_id;
-    this.sending_speed = sending_speed;
-    this.time_elapsed = 0;
+  start_sending_ships() {
+    this.ships_id = this.origin_planet.status;
+    this.ships_color = this.origin_planet.color;
+    this.sending_speed = this.origin_planet.attack_speed;
+    this.time_elapsed = 1;
   }
 
   stop_sending_ships() {
@@ -22,12 +26,16 @@ export default class Sending {
   }
 
   update(delta) {
-    this.time_elapsed += delta;
-    move_ships(delta);
-    if (this.time_elapsed > 1 / this.sending_speed && this.ships_id !== null) {
-      this.time_elapsed -= 1 / this.sending_speed;
-      add_ship();
+    // update ships position
+    this.time_elapsed += delta * this.sending_speed;
+    this.move_ships(delta);
+    // add new ships
+    if (this.time_elapsed >= 1 && this.ships_id !== null) {
+      this.time_elapsed -= 1;
+      this.add_ship();
     }
+    // coliding with planets handled in spaceship.js
+    // coliding with other ships handled in connection.js
   }
 
   move_ships(delta) {
@@ -44,5 +52,6 @@ export default class Sending {
       this._app,
     );
     this.ships_queue.push(ship);
+    this._app.stage.addChild(ship.sprite);
   }
 }

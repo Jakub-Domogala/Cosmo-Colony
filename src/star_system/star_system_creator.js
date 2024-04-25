@@ -4,6 +4,7 @@ import * as PIXI from "pixi.js";
 
 export function initPointer(starSystem) {
   starSystem.pointer = new PIXI.Graphics();
+  starSystem.pointer.hitArea = new PIXI.Circle(0, 0, 0); // disable hit area
   starSystem.app.stage.addChild(starSystem.pointer);
 }
 
@@ -35,7 +36,7 @@ function createPlanets(starSystem, planets) {
       planets[i].y,
       planets[i].radius,
       0x556655,
-      "alive",
+      null,
       starSystem,
     );
     starSystem.planets_dict[new_planet.name] = new_planet;

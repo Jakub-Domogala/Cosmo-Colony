@@ -15,19 +15,22 @@ could use click on A, click on B
 
 */
 import * as PIXI from "pixi.js";
+import STATUS from "./planet/planet_status_enum";
 
 export default class Planet {
-  constructor(name, x, y, r, color, status, system) {
+  constructor(name, x, y, r, color, owner, system) {
     this.attack_speed = 1;
     this.breed_rate = 1;
 
     this.name = name;
+    this.label = null;
     this.r = r;
     this.x = x;
     this.y = y;
     this.app = system.app;
     this.color = color;
-    this.status = status;
+    this.status = owner !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
+    this.owner = owner == null ? null : owner;
     this.sprite = null;
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
@@ -71,8 +74,8 @@ export default class Planet {
   }
 
   addConnection(connection) {
-    let second_planet = connection.planetA;
-    if (connection.planet1 == this) second_planet = connection.planetB;
+    const second_planet =
+      connection.planetA == this ? connection.planetB : connection.planetA;
     this.connections_dict[second_planet.name] = connection;
   }
 
@@ -82,10 +85,11 @@ export default class Planet {
       fontSize: 12,
       fill: "white",
     });
-    const name = new PIXI.Text({ text: this.name, style });
-    name.anchor.set(0.5);
-    name.x = 0;
-    circle_texture.addChild(name);
+    this.label = new PIXI.Text({ text: this.name, style });
+    console.log(name);
+    this.label.anchor.set(0.5);
+    this.label.x = 0;
+    circle_texture.addChild(this.label);
   }
 
   start_sending_ships(destination_planet) {
@@ -99,21 +103,19 @@ export default class Planet {
   }
 
   onMouseDown(event) {
-    console.log("ONMOUSEDOWN", this);
+    console.log(this.connections_dict);
     if (this.this_system) {
       this.this_system.onPlanetDrag(this);
     }
   }
 
   onMouseOver(event) {
-    console.log("ONMOUSEOVER", this);
     if (this.this_system) {
       this.this_system.onDragOver(this);
     }
   }
 
   onMouseOut(event) {
-    console.log("ONMOUSEOUT", this);
     if (this.this_system) {
       this.this_system.onDragOut(this);
     }

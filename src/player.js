@@ -2,8 +2,8 @@
 
 export default class Player {
   constructor(name, color, app, planets) {
-    this.name = name; // string name of the player
-    this.color = color; // color of the player
+    this.name = name;
+    this.color = color;
     this.planets = planets;
     this._app = app;
   }
