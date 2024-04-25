@@ -47,7 +47,8 @@ function addPlanetsAndConnectionsToStage(starSystem) {
   starSystem.connections.forEach((connection) =>
     starSystem.app.stage.addChild(connection.sprite),
   );
-  Object.values(starSystem.planets_dict).forEach((planet) =>
-    starSystem.app.stage.addChild(planet.sprite),
-  );
+  Object.values(starSystem.planets_dict).forEach((planet) => {
+    starSystem.app.stage.addChild(planet.sprite);
+    starSystem.app.stage.addChild(planet.label);
+  });
 }

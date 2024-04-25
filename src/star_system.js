@@ -25,6 +25,11 @@ export default class StarSystem {
     this.showPointerHighlightOn(planet);
     this.app.stage.on("pointermove", this.onDragMove.bind(this));
     this.app.stage.on("pointerup", this.onDragEnd.bind(this));
+
+    // this.app.stage.on("pointercancel", (event) => this.pointer.clear());
+    // this.app.stage.on("pointerupoutside", (event) => this.pointer.clear());
+    // this.app.stage.on("pointertap", (event) => this.pointer.clear());
+    // this.app.stage.on("click", (event) => this.pointer.clear());
   }
 
   onDragMove(event) {
@@ -65,8 +70,8 @@ export default class StarSystem {
 
   onDragEnd() {
     if (!this.draggedPlanet) return;
-    if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
     this.pointer.clear();
+    if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
     this.showPointerHighlightOff(this.draggedPlanet);
     this.app.stage.off("pointermove", this.onDragMove);
     this.app.stage.off("pointerup", this.onDragEnd);
@@ -118,5 +123,11 @@ export default class StarSystem {
     for (let connection of this.connections) {
       connection.update(delta);
     }
+    // update planets
+    // console.log(this.planets_dict);
+    Object.values(this.planets_dict).forEach((planet) => {
+      // console.log(planet);
+      planet.update(delta);
+    });
   }
 }

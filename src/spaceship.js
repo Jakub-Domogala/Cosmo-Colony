@@ -5,11 +5,11 @@ import { distance } from "./utils";
 
 export default class Spaceship {
   constructor(id, origin_planet, destination_planet, app) {
-    this.ship_size = 10;
+    this.ship_size = 5;
     this.speed = 25;
 
     this.current_speed = 10.0;
-    this.acceleration_per_sec = 40.0;
+    this.acceleration_per_sec = 80.0;
 
     this.id = id;
     this.origin_planet = origin_planet;
@@ -62,6 +62,7 @@ export default class Spaceship {
     this.sprite.y = this.current_cordinates.y;
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
+    this.sprite.hitArea = new PIXI.Circle(0, 0, 0);
     this.sprite.rotation = this.rotation;
     this.sprite.texture = this.app.renderer.generateTexture(
       this.get_ship_shape(),
