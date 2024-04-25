@@ -8,6 +8,9 @@ export default class Spaceship {
     this.ship_size = 10;
     this.speed = 25;
 
+    this.current_speed = 10.0;
+    this.acceleration_per_sec = 40.0;
+
     this.id = id;
     this.origin_planet = origin_planet;
     this.destination_planet = destination_planet;
@@ -77,17 +80,23 @@ export default class Spaceship {
     return shape;
   }
 
-  update_position(delta_time) {
+  get_current_speed(delta) {
+    this.current_speed +=
+      this.acceleration_per_sec *
+      delta *
+      (this.travel_percentage > 0.5 ? -0.95 : 1);
+    return this.current_speed;
+  }
+
+  update_position(delta) {
     const A = this.start_cordinates;
     const B = this.end_cordinates;
     const distance = Math.sqrt((B.x - A.x) ** 2 + (B.y - A.y) ** 2);
-    const speed = this.speed;
+    const speed = this.get_current_speed(delta);
     const x =
-      this.current_cordinates.x +
-      ((speed * (B.x - A.x)) / distance) * delta_time;
+      this.current_cordinates.x + ((speed * (B.x - A.x)) / distance) * delta;
     const y =
-      this.current_cordinates.y +
-      ((speed * (B.y - A.y)) / distance) * delta_time;
+      this.current_cordinates.y + ((speed * (B.y - A.y)) / distance) * delta;
     this.current_cordinates = { x, y };
     this.sprite.x = x;
     this.sprite.y = y;
@@ -103,9 +112,9 @@ export default class Spaceship {
     return this.travel_percentage >= 1 ? true : false;
   }
 
-  update(delta_time) {
+  update(delta) {
     // update position
-    this.update_position(delta_time);
+    this.update_position(delta);
     this.update_travel_percentage();
     // update variables
 

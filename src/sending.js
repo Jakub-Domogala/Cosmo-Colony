@@ -15,6 +15,7 @@ export default class Sending {
   }
 
   start_sending_ships() {
+    if (this.ships_id == this.origin_planet.status) return;
     this.ships_id = this.origin_planet.status;
     this.ships_color = this.origin_planet.color;
     this.sending_speed = this.origin_planet.attack_speed;
