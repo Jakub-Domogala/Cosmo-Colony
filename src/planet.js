@@ -38,7 +38,8 @@ export default class Planet {
     this.onMouseDown = this.onMouseDown.bind(this);
 
     this.sprite.interactive = true;
-    this.sprite.eventMode = "static";
+    this.sprite.eventMode = "dynamic";
+    this.sprite.cursor = "pointer";
     this.sprite.addEventListener("pointerdown", this.onMouseDown, this);
     this.sprite.addEventListener("pointerover", this.onMouseOver.bind(this)); // here i use bind(this) cause i want to use the planet object not the sprite
     this.sprite.addEventListener("pointerout", this.onMouseOut.bind(this));
