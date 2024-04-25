@@ -1,8 +1,6 @@
 // import * as PIXI from "pixi.js";
 import { Application, Assets } from "pixi.js";
-import Planet from "./src/planet.js";
 import StarSystem from "./src/star_system.js";
-import Spaceship from "./src/spaceship.js";
 
 // import json file named sys1.json
 import sys1 from "./resource/solar_systems/sys1.json";
@@ -86,7 +84,6 @@ import circle_img from "./resource/img/circle.svg";
     // update the game
     // update the physics
     // update the graphics
-    // console.log("delta", ticker.deltaTime);
 
     // spaceship.update(ticker.deltaTime);
     starSystem.update(ticker.deltaMS / 1000);

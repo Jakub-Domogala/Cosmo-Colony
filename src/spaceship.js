@@ -18,7 +18,7 @@ export default class Spaceship {
     this.end_cordinates = null;
     this.current_cordinates = null;
     this.rotation = null;
-    this.travel_percentage = 0;
+    this.travel_percentage = 0.0;
     this.travel_distance = 0;
     this.offset = 8;
     this._kill_distance;
@@ -55,7 +55,6 @@ export default class Spaceship {
 
   make_sprite() {
     this.sprite = new PIXI.Sprite(PIXI.Texture.RED); // placeholder texture
-    // console.log(this.current_cordinates);
     this.sprite.x = this.current_cordinates.x;
     this.sprite.y = this.current_cordinates.y;
     this.sprite.anchor.set(0.5);
@@ -94,9 +93,20 @@ export default class Spaceship {
     this.sprite.y = y;
   }
 
+  update_travel_percentage() {
+    this.travel_percentage =
+      distance(this.current_cordinates, this.start_cordinates) /
+      this.distance_to_travel;
+  }
+
+  did_arrive() {
+    return this.travel_percentage >= 1 ? true : false;
+  }
+
   update(delta_time) {
     // update position
     this.update_position(delta_time);
+    this.update_travel_percentage();
     // update variables
 
     // update ship collisions, if true delete both ships

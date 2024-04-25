@@ -54,14 +54,6 @@ export default class Connection {
   }
 
   start_sending_ships(origin_planet) {
-    console.log(
-      "start_sending_ships from ",
-      origin_planet.name,
-      " on connection ",
-      this.planetA.name,
-      "---",
-      this.planetB.name,
-    );
     if (origin_planet != this.planetA && origin_planet != this.planetB)
       return null;
     if (origin_planet == this.planetA) {

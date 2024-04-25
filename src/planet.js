@@ -86,7 +86,6 @@ export default class Planet {
       fill: "white",
     });
     this.label = new PIXI.Text({ text: this.name, style });
-    console.log(name);
     this.label.anchor.set(0.5);
     this.label.x = 0;
     circle_texture.addChild(this.label);
@@ -103,7 +102,6 @@ export default class Planet {
   }
 
   onMouseDown(event) {
-    console.log(this.connections_dict);
     if (this.this_system) {
       this.this_system.onPlanetDrag(this);
     }

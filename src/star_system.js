@@ -53,7 +53,6 @@ export default class StarSystem {
   }
 
   findIfPlanetsConnection(planetA, planetB) {
-    // console.log(planetA, planetB);
     let result = planetA.connections_dict[planetB.name];
     return result != undefined ? result : null;
   }
@@ -67,11 +66,6 @@ export default class StarSystem {
   onDragEnd() {
     if (!this.draggedPlanet) return;
     if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
-    console.log(
-      "star system END DRAG",
-      this.draggedPlanet != null ? this.draggedPlanet.name : "undefined",
-      this.targetPlanet != null ? this.targetPlanet.name : "undefined",
-    );
     this.pointer.clear();
     this.showPointerHighlightOff(this.draggedPlanet);
     this.app.stage.off("pointermove", this.onDragMove);

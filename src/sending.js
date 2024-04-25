@@ -39,12 +39,16 @@ export default class Sending {
   }
 
   move_ships(delta) {
-    for (let ship of this.ships_queue) {
-      ship.update(delta);
+    for (let ship of this.ships_queue) ship.update(delta);
+    while (this.ships_queue.length > 0 && this.ships_queue[0].did_arrive()) {
+      const ship = this.ships_queue.shift();
+      // TODO this.destination_planet.ship_arrived(ship.id);
+      this._app.stage.removeChild(ship.sprite);
     }
   }
 
   add_ship() {
+    if (this.ships_id === null) return;
     let ship = new Spaceship(
       this.ships_id,
       this.origin_planet,
