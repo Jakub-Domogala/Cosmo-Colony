@@ -1,5 +1,19 @@
 // planet.js
+/*
 
+
+POTENTIAL SOLUTION FOR DRAGGING NOT WORKING:
+- The problem is that when i move mouse with pointerdown event, the pointerover and pointerout are triggered randomly when i keep hovering over the planet.
+- The solution is to use pointermove event instead of pointerover and pointerout events.
+- The pointermove event is triggered when the pointer is moved over the sprite.
+
+could use click on A, click on B
+
+
+
+
+
+*/
 import * as PIXI from "pixi.js";
 
 export default class Planet {
@@ -8,10 +22,10 @@ export default class Planet {
     this.breed_rate = 1;
 
     this.name = name;
-    this._r = r;
+    this.r = r;
     this.x = x;
     this.y = y;
-    this._app = system.app;
+    this.app = system.app;
     this.color = color;
     this.status = status;
     this.sprite = null;
@@ -25,55 +39,9 @@ export default class Planet {
 
     this.sprite.interactive = true;
     this.sprite.eventMode = "static";
-    this.sprite.addEventListener("pointerdown", this.onMouseDown);
-    this.sprite.addEventListener("pointerover", this.onMouseOver.bind(this));
+    this.sprite.addEventListener("pointerdown", this.onMouseDown, this);
+    this.sprite.addEventListener("pointerover", this.onMouseOver.bind(this)); // here i use bind(this) cause i want to use the planet object not the sprite
     this.sprite.addEventListener("pointerout", this.onMouseOut.bind(this));
-  }
-
-  get x() {
-    return this._x;
-  }
-
-  get y() {
-    return this._y;
-  }
-
-  get r() {
-    return this._r;
-  }
-
-  get color() {
-    return this._color;
-  }
-
-  get status() {
-    return this._status;
-  }
-
-  get app() {
-    return this._app;
-  }
-
-  set x(newX) {
-    this._x = newX;
-    if (this.sprite) {
-      this.sprite.x = newX;
-    }
-  }
-
-  set y(newY) {
-    this._y = newY;
-    if (this.sprite) {
-      this.sprite.y = newY;
-    }
-  }
-
-  set color(newColor) {
-    this._color = newColor;
-  }
-
-  set status(newStatus) {
-    this._status = newStatus;
   }
 
   make_sprite() {
@@ -82,6 +50,7 @@ export default class Planet {
     this.sprite.y = this.y;
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
+    // this.sprite.hitArea = new PIXI.Circle(0, 0, 1 * this.r); didnt help
     this.updateColor();
   }
 
@@ -119,11 +88,7 @@ export default class Planet {
   }
 
   start_sending_ships(destination_planet) {
-    if (this.connections_dict[destination_planet.name] == undefined) {
-      console.log("No connection between planets");
-      return;
-    }
-
+    if (this.connections_dict[destination_planet.name] == undefined) return;
     this.connections_dict[destination_planet.name].start_sending_ships(this);
   }
 
@@ -133,22 +98,21 @@ export default class Planet {
   }
 
   onMouseDown(event) {
-    console.log("planet onMouseDown");
-    console.log(this.solar_system);
+    console.log("ONMOUSEDOWN", this);
     if (this.this_system) {
       this.this_system.onPlanetDrag(this);
     }
   }
 
   onMouseOver(event) {
-    console.log("planet onMouseOver dragging");
+    console.log("ONMOUSEOVER", this);
     if (this.this_system) {
       this.this_system.onDragOver(this);
     }
   }
 
   onMouseOut(event) {
-    console.log("planet onMouseOut dragging");
+    console.log("ONMOUSEOUT", this);
     if (this.this_system) {
       this.this_system.onDragOut(this);
     }

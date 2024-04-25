@@ -1,7 +1,6 @@
 // star_system.js
 
-import * as PIXI from "pixi.js";
-import { createMap } from "./star_system/star_system_creator.js";
+import { createMap, initPointer } from "./star_system/star_system_creator.js";
 
 export default class StarSystem {
   constructor(data, app, circleTexture) {
@@ -12,11 +11,10 @@ export default class StarSystem {
     this.connections = [];
     this.draggedPlanet = null;
     this.targetPlanet = null;
-    createMap(this);
+    this.pointer = null;
 
-    // pointer line when dragging
-    this.pointer = new PIXI.Graphics();
-    this.app.stage.addChild(this.pointer);
+    createMap(this);
+    initPointer(this);
   }
 
   onPlanetDrag(planet) {

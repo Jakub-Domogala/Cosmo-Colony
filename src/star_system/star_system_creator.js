@@ -1,5 +1,11 @@
 import Planet from "./../planet";
 import Connection from "./../connection";
+import * as PIXI from "pixi.js";
+
+export function initPointer(starSystem) {
+  starSystem.pointer = new PIXI.Graphics();
+  starSystem.app.stage.addChild(starSystem.pointer);
+}
 
 export function createMap(starSystem) {
   let planetData = starSystem.data;
