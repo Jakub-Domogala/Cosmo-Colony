@@ -4,8 +4,7 @@ import Spaceship from "./spaceship.js";
 
 export default class Sending {
   constructor(planetA, planetB, app) {
-    this.ships_id = null;
-    this.ships_color = null;
+    this.owner = null;
     this.origin_planet = planetA;
     this.destination_planet = planetB;
     this.time_elapsed = 0;
@@ -15,15 +14,15 @@ export default class Sending {
   }
 
   start_sending_ships() {
-    if (this.ships_id == this.origin_planet.status) return;
-    this.ships_id = this.origin_planet.status;
+    if (this.owner == this.origin_planet.owner) return;
+    this.owner = this.origin_planet.owner;
     this.ships_color = this.origin_planet.color;
     this.sending_speed = this.origin_planet.attack_speed;
     this.time_elapsed = 1;
   }
 
   stop_sending_ships() {
-    this.ships_id = null;
+    this.owner = null;
   }
 
   update(delta) {
@@ -31,14 +30,14 @@ export default class Sending {
     this.time_elapsed += delta * this.sending_speed;
     this.move_ships(delta);
     // add new ships
-    if (this.time_elapsed >= 1 && this.ships_id !== null) {
+    if (this.time_elapsed >= 1 && this.owner !== null) {
       this.time_elapsed -= 1;
-      if (this.origin_planet.initial_population <= 2) {
+      if (this.origin_planet.population <= 2) {
         this.stop_sending_ships();
         return;
       }
       this.add_ship();
-      this.origin_planet.initial_population -= 1;
+      this.origin_planet.population -= 1;
       this.origin_planet.updateLabel();
     }
     // coliding with planets handled in spaceship.js
@@ -49,17 +48,16 @@ export default class Sending {
     for (let ship of this.ships_queue) ship.update(delta);
     while (this.ships_queue.length > 0 && this.ships_queue[0].did_arrive()) {
       const ship = this.ships_queue.shift();
-      this.destination_planet.initial_population += 1;
-      this.destination_planet.updateLabel();
+      this.destination_planet.shipArrival(ship);
       // TODO this.destination_planet.ship_arrived(ship.id);
       this._app.stage.removeChild(ship.sprite);
     }
   }
 
   add_ship() {
-    if (this.ships_id === null) return;
+    if (this.owner === null) return;
     let ship = new Spaceship(
-      this.ships_id,
+      this.owner,
       this.origin_planet,
       this.destination_planet,
       this._app,

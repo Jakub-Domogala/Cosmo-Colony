@@ -12,8 +12,6 @@ export function createMap(starSystem) {
   let planetData = starSystem.data;
   createPlanets(starSystem, planetData.planets);
   createConnections(starSystem, planetData.connections);
-
-  // this needs to be in order for correct layering
   addPlanetsAndConnectionsToStage(starSystem);
 }
 
@@ -29,14 +27,21 @@ function createConnections(starSystem, connections) {
 }
 
 function createPlanets(starSystem, planets) {
+  let player_idx = 0;
   for (let i = 0; i < planets.length; i++) {
+    let player_assign = null;
+    if (starSystem.players.length > 0 && planets[i].occupied) {
+      player_assign = starSystem.players[player_idx];
+      player_idx = (player_idx + 1) % starSystem.players.length;
+    }
+
     let new_planet = new Planet(
       planets[i].name,
       planets[i].x,
       planets[i].y,
       planets[i].radius,
-      0x556655,
-      null,
+      player_assign ? player_assign.color : null,
+      player_assign,
       starSystem,
     );
     starSystem.planets_dict[new_planet.name] = new_planet;

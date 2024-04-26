@@ -1,10 +1,10 @@
 // player.js
 
 export default class Player {
-  constructor(name, color, app, planets) {
+  constructor(name, color, app) {
     this.name = name;
     this.color = color;
-    this.planets = planets;
+    this.planets = [];
     this._app = app;
   }
 }

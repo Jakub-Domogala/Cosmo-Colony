@@ -16,12 +16,13 @@ could use click on A, click on B
 */
 import * as PIXI from "pixi.js";
 import STATUS from "./planet/planet_status_enum";
+import { COLOR_PLANET_NEUTRAL } from "./settings";
 
 export default class Planet {
-  constructor(name, x, y, r, color, playerName, system) {
+  constructor(name, x, y, r, color, player, system) {
     this.attack_speed = 5;
-    this.breed_rate = 0.5;
-    this.initial_population = 100;
+    this.breed_rate = player ? 1 : 0.5;
+    this.population = player ? 100 : r;
 
     this.elapsed_time = 0.0;
     this.name = name;
@@ -30,9 +31,9 @@ export default class Planet {
     this.x = x;
     this.y = y;
     this.app = system.app;
-    this.color = color;
-    this.status = playerName !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
-    this.owner = playerName == null ? null : playerName;
+    this.color = color ? color : COLOR_PLANET_NEUTRAL;
+    this.status = player !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
+    this.owner = player;
     this.sprite = null;
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
@@ -58,20 +59,22 @@ export default class Planet {
     this.sprite.scale.set(1);
     // this.sprite.hitArea = new PIXI.Circle(0, 0, 1 * this.r); didnt help
     this.updateColor();
+    this.display_name();
   }
 
   updateColor() {
     const circle_texture = new PIXI.Graphics();
     circle_texture.circle(0, 0, this.r);
     circle_texture.fill(this.color);
-    this.display_name();
     const texture = this.app.renderer.generateTexture(circle_texture);
     this.sprite.texture = texture;
+    this.sprite.didChange = true;
   }
 
   planetTakeover(newColor, newStatus) {
     this.color = newColor;
     this.status = newStatus;
+    this.breed_rate = 1;
     this.updateColor();
   }
 
@@ -87,7 +90,7 @@ export default class Planet {
       fontSize: 22,
       fill: "white",
     });
-    this.label = new PIXI.Text({ text: this.initial_population, style });
+    this.label = new PIXI.Text({ text: this.population, style });
     this.label.anchor.set(0.5);
     this.label.x = this.x;
     this.label.y = this.y;
@@ -102,13 +105,24 @@ export default class Planet {
   }
 
   updateLabel() {
-    this.label.text = Math.round(this.initial_population, 0).toString();
-    this.label.didChange = true;
+    this.label.text = Math.round(this.population, 0).toString();
+    // this.label.didChange = true;
     this.label._didTextUpdate = true;
-    // console.log(this.initial_population);
-    // this.labelSprite.texture = this.app.renderer.generateTexture(this.label);
-    // this.app.stage.removeChild(this.labelSprite);
-    // this.app.stage.addChild(this.labelSprite);
+  }
+
+  shipArrival(ship) {
+    if (!this.owner || this.owner != ship.owner) {
+      this.population -= 1;
+      if (this.population <= 0) {
+        this.owner = ship.owner;
+        this.population = Math.abs(this.population);
+        this.planetTakeover(this.owner.color, STATUS.OCCUPIED);
+      }
+      this.updateLabel();
+    } else if (this.owner == ship.owner) {
+      this.population += 1;
+      this.updateLabel();
+    }
   }
 
   update(delta) {
@@ -116,8 +130,8 @@ export default class Planet {
     // if (this.name == "Mars") console.log("Mars time: ", this.elapsed_time);
     if (this.elapsed_time >= 1) {
       this.elapsed_time -= 1;
-      this.initial_population +=
-        Math.log2(this.initial_population * 2) * 0.1 * this.r * 0.02;
+      // this.population += Math.log2(this.population * 2) * 0.1 * this.r * 0.02;
+      this.population += 1;
       this.updateLabel();
     }
     // Update the planet

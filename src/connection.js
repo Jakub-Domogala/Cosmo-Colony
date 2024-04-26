@@ -39,7 +39,7 @@ export default class Connection {
     return this._app;
   }
 
-  get_line_shape(color) {
+  get_line_shape() {
     const line = new PIXI.Graphics();
     line.moveTo(this.width / 2, this.distance / 2);
 
@@ -59,7 +59,7 @@ export default class Connection {
     return line;
   }
 
-  get_hover_line_shape(color) {
+  get_hover_line_shape() {
     const line = new PIXI.Graphics();
     line.moveTo(this.width / 2, this.distance / 2);
 
@@ -178,12 +178,12 @@ export default class Connection {
     if (origin_planet != this.planetA && origin_planet != this.planetB)
       return null;
     if (origin_planet == this.planetA) {
-      if (this.sendingB2A.ships_id == origin_planet.status)
+      if (this.sendingB2A.owner == origin_planet.owner)
         this.sendingB2A.stop_sending_ships();
       this.sendingA2B.start_sending_ships();
     }
     if (origin_planet == this.planetB) {
-      if (this.sendingA2B.ships_id == origin_planet.status)
+      if (this.sendingA2B.owner == origin_planet.owner)
         this.sendingA2B.stop_sending_ships();
       this.sendingB2A.start_sending_ships();
     }

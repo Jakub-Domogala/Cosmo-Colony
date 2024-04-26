@@ -4,14 +4,14 @@ import * as PIXI from "pixi.js";
 import { distance } from "./utils";
 
 export default class Spaceship {
-  constructor(id, origin_planet, destination_planet, app) {
-    this.ship_size = 5;
+  constructor(owner, origin_planet, destination_planet, app) {
+    this.ship_size = 8;
     this.speed = 25;
 
-    this.current_speed = 10.0;
-    this.acceleration_per_sec = 80.0;
+    this.current_speed = 40.0;
+    this.acceleration_per_sec = 200.0;
 
-    this.id = id;
+    this.owner = owner;
     this.origin_planet = origin_planet;
     this.destination_planet = destination_planet;
     this.distance_to_travel = null;
@@ -76,7 +76,7 @@ export default class Spaceship {
     shape.lineTo(0, 2 * this.ship_size);
     shape.lineTo(0.7 * this.ship_size, -1 * this.ship_size);
     shape.lineTo(0, 0);
-    shape.fill(0x00ff00);
+    shape.fill(this.owner.color);
     shape.stroke({ width: 2, color: 0x88aa88, alpha: 1, join: "round" });
     return shape;
   }

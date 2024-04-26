@@ -5,11 +5,11 @@ import { distance } from "./utils.js";
 import { COLOR_SUCCESS, COLOR_FAIL, COLOR_NEUTRAL } from "./settings.js";
 
 export default class StarSystem {
-  constructor(data, app, circleTexture) {
+  constructor(data, app, players) {
     this.data = data;
     this.app = app;
     this.planets_dict = {};
-    this.circleTexture = circleTexture;
+    this.players = players;
     this.connections = [];
     this.draggedPlanet = null;
     this.targetPlanet = null;
