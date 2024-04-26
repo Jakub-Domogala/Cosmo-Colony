@@ -18,10 +18,11 @@ import * as PIXI from "pixi.js";
 import STATUS from "./planet/planet_status_enum";
 
 export default class Planet {
-  constructor(name, x, y, r, color, owner, system) {
+  constructor(name, x, y, r, color, playerName, system) {
     this.attack_speed = 5;
     this.breed_rate = 0.5;
     this.initial_population = 100;
+
     this.elapsed_time = 0.0;
     this.name = name;
     this.label = null;
@@ -30,8 +31,8 @@ export default class Planet {
     this.y = y;
     this.app = system.app;
     this.color = color;
-    this.status = owner !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
-    this.owner = owner == null ? null : owner;
+    this.status = playerName !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
+    this.owner = playerName == null ? null : playerName;
     this.sprite = null;
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
@@ -91,15 +92,8 @@ export default class Planet {
     this.label.x = this.x;
     this.label.y = this.y;
     this.label.hitArea = new PIXI.Circle(0, 0, 0);
-    // this.labelSprite = new PIXI.Sprite(
-    //   this.app.renderer.generateTexture(this.label),
-    // );
-    // this.labelSprite.x = this.x;
-    // this.labelSprite.y = this.y;
-    // // this.labelSprite.y = this.y + this.r + 10;
-    // this.labelSprite.anchor.set(0.5);
-    // this.labelSprite.hitArea = new PIXI.Circle(0, 0, 0);
-    // circle_texture.addChild(this.label);
+    this.label.eventMode = "dynamic";
+    console.log(this.label);
   }
 
   start_sending_ships(destination_planet) {
@@ -109,6 +103,8 @@ export default class Planet {
 
   updateLabel() {
     this.label.text = Math.round(this.initial_population, 0).toString();
+    this.label.didChange = true;
+    this.label._didTextUpdate = true;
     // console.log(this.initial_population);
     // this.labelSprite.texture = this.app.renderer.generateTexture(this.label);
     // this.app.stage.removeChild(this.labelSprite);

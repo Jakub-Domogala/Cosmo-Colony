@@ -9,48 +9,56 @@
   "planets": [
     {
       "name": "Mercury",
+      "occupied": true,
       "x": 100,
       "y": 100,
       "radius": 10
     },
     {
       "name": "Venus",
+      "occupied": false,
       "x": 400,
       "y": 100,
       "radius": 20
     },
     {
       "name": "Earth",
+      "occupied": false,
       "x": 350,
       "y": 300,
       "radius": 30
     },
     {
       "name": "Mars",
+      "occupied": false,
       "x": 600,
       "y": 200,
       "radius": 40
     },
     {
       "name": "Jupiter",
+      "occupied": false,
       "x": 500,
       "y": 500,
       "radius": 20
     },
     {
       "name": "Saturn",
+      "occupied": false,
       "x": 900,
       "y": 250,
       "radius": 40
     },
     {
       "name": "Uranus",
+      "occupied": false,
       "x": 750,
       "y": 400,
       "radius": 20
     },
     {
       "name": "Neptune",
+      "occupied": true,
       "x": 700,
       "y": 600,
       "radius": 30

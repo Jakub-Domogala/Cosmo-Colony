@@ -39,6 +39,7 @@ export default class Sending {
       }
       this.add_ship();
       this.origin_planet.initial_population -= 1;
+      this.origin_planet.updateLabel();
     }
     // coliding with planets handled in spaceship.js
     // coliding with other ships handled in connection.js
@@ -49,6 +50,7 @@ export default class Sending {
     while (this.ships_queue.length > 0 && this.ships_queue[0].did_arrive()) {
       const ship = this.ships_queue.shift();
       this.destination_planet.initial_population += 1;
+      this.destination_planet.updateLabel();
       // TODO this.destination_planet.ship_arrived(ship.id);
       this._app.stage.removeChild(ship.sprite);
     }
