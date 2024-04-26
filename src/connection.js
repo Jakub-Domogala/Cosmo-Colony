@@ -6,8 +6,8 @@ import { distance } from "./utils.js";
 export default class Connection {
   constructor(planetA, planetB, app) {
     this.sprite = null; // PIXI sprite object for the connection
-    this.width = 8; // constant integer width of the connection
-    this.color = 0x00ff00; // constant integer color of the connection
+    this.width = 4; // constant integer width of the connection
+    this.color = 0x090909; // constant integer color of the connection
     this.cordinates = [
       [planetA.x, planetA.y],
       [planetB.x, planetB.y],
@@ -49,9 +49,9 @@ export default class Connection {
     line.lineTo(this.width / 2, this.distance / 2);
 
     line.closePath();
-    line.fill();
+    line.fill(0x000000);
     line.stroke({
-      width: 1,
+      width: this.width / 2,
       color: this.color,
       alpha: 1,
       join: "round",
@@ -74,10 +74,10 @@ export default class Connection {
     line.lineTo(this.width / 2, this.distance / 2);
 
     line.closePath();
-    line.fill();
+    line.fill(this.color);
     line.stroke({
       width: 1,
-      color: color,
+      color: this.color,
       alpha: 1,
       join: "round",
     });
