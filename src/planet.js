@@ -1,19 +1,5 @@
 // planet.js
-/*
 
-
-POTENTIAL SOLUTION FOR DRAGGING NOT WORKING:
-- The problem is that when i move mouse with pointerdown event, the pointerover and pointerout are triggered randomly when i keep hovering over the planet.
-- The solution is to use pointermove event instead of pointerover and pointerout events.
-- The pointermove event is triggered when the pointer is moved over the sprite.
-
-could use click on A, click on B
-
-
-
-
-
-*/
 import * as PIXI from "pixi.js";
 import STATUS from "./planet/planet_status_enum";
 import { COLOR_PLANET_NEUTRAL } from "./settings";
@@ -24,7 +10,7 @@ export default class Planet {
     this.breed_rate = player ? 1 : 0.5;
     this.population = player ? 100 : r;
 
-    this.elapsed_time = 0.0;
+    this.breeding_time = 0.0;
     this.name = name;
     this.label = null;
     this.r = r;
@@ -125,11 +111,16 @@ export default class Planet {
     }
   }
 
+  shipSent() {
+    this.population -= 1;
+    this.updateLabel();
+  }
+
   update(delta) {
-    this.elapsed_time += delta * this.breed_rate;
-    // if (this.name == "Mars") console.log("Mars time: ", this.elapsed_time);
-    if (this.elapsed_time >= 1) {
-      this.elapsed_time -= 1;
+    this.breeding_time += delta * this.breed_rate;
+    // if (this.name == "Mars") console.log("Mars time: ", this.breeding_time);
+    if (this.breeding_time >= 1) {
+      this.breeding_time -= 1;
       // this.population += Math.log2(this.population * 2) * 0.1 * this.r * 0.02;
       this.population += 1;
       this.updateLabel();

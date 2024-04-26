@@ -1,13 +1,13 @@
 // sending.js
 
-import Spaceship from "./spaceship.js";
+import Spaceship from "./../spaceship.js";
 
 export default class Sending {
   constructor(planetA, planetB, app) {
     this.owner = null;
     this.origin_planet = planetA;
     this.destination_planet = planetB;
-    this.time_elapsed = 0;
+    this.sending_time = 0;
     this.sending_speed = null;
     this.ships_queue = [];
     this._app = app;
@@ -18,7 +18,7 @@ export default class Sending {
     this.owner = this.origin_planet.owner;
     this.ships_color = this.origin_planet.color;
     this.sending_speed = this.origin_planet.attack_speed;
-    this.time_elapsed = 1;
+    this.sending_time = 1;
   }
 
   stop_sending_ships() {
@@ -27,18 +27,17 @@ export default class Sending {
 
   update(delta) {
     // update ships position
-    this.time_elapsed += delta * this.sending_speed;
+    this.sending_time += delta * this.sending_speed;
     this.move_ships(delta);
     // add new ships
-    if (this.time_elapsed >= 1 && this.owner !== null) {
-      this.time_elapsed -= 1;
+    if (this.sending_time >= 1 && this.owner !== null) {
+      this.sending_time -= 1;
       if (this.origin_planet.population <= 2) {
         this.stop_sending_ships();
         return;
       }
       this.add_ship();
-      this.origin_planet.population -= 1;
-      this.origin_planet.updateLabel();
+      this.origin_planet.shipSent();
     }
     // coliding with planets handled in spaceship.js
     // coliding with other ships handled in connection.js

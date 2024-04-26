@@ -2,7 +2,11 @@
 
 import { createMap, initPointer } from "./star_system/star_system_creator.js";
 import { distance } from "./utils.js";
-import { COLOR_SUCCESS, COLOR_FAIL, COLOR_NEUTRAL } from "./settings.js";
+import {
+  COLOR_INDICATOR_SUCCESS,
+  COLOR_INDICATOR_FAIL,
+  COLOR_INDICATOR_NEUTRAL,
+} from "./settings.js";
 
 export default class StarSystem {
   constructor(data, app, players) {
@@ -43,8 +47,8 @@ export default class StarSystem {
         this.draggedPlanet.sprite.position,
         this.targetPlanet.sprite.position,
         this.findIfPlanetsConnection(this.draggedPlanet, this.targetPlanet)
-          ? COLOR_SUCCESS
-          : COLOR_FAIL,
+          ? COLOR_INDICATOR_SUCCESS
+          : COLOR_INDICATOR_FAIL,
       );
     }
   }
@@ -96,7 +100,7 @@ export default class StarSystem {
     }
   }
 
-  drawPointer(positionA, positionB, color = COLOR_NEUTRAL) {
+  drawPointer(positionA, positionB, color = COLOR_INDICATOR_NEUTRAL) {
     this.pointer.clear();
     this.pointer.moveTo(positionA.x, positionA.y);
     this.pointer.lineTo(positionB.x, positionB.y);

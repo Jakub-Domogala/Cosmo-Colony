@@ -1,21 +1,28 @@
-import * as PIXI from "pixi.js";
-import Sending from "./sending.js";
-import { distance } from "./utils.js";
 // connection.js
+
+import * as PIXI from "pixi.js";
+import Sending from "./connection/sending.js";
+import { distance } from "./utils.js";
+import { COLOR_CONNECTION } from "./settings.js";
+import {
+  get_line_shape,
+  get_hit_area,
+  get_hover_line_shape,
+} from "./connection/connection_utils.js";
 
 export default class Connection {
   constructor(planetA, planetB, app) {
-    this.sprite = null; // PIXI sprite object for the connection
-    this.width = 4; // constant integer width of the connection
-    this.color = 0x090909; // constant integer color of the connection
+    this.sprite = null;
+    this.width = 4;
+    this.color = COLOR_CONNECTION;
     this.cordinates = [
       [planetA.x, planetA.y],
       [planetB.x, planetB.y],
     ]; // list of integers representing the coordinates of the connection
     this.sendingA2B = null;
     this.sendingB2A = null;
-    this._planetA = planetA;
-    this._planetB = planetB;
+    this.planetA = planetA;
+    this.planetB = planetB;
     this.distance = distance(planetA, planetB);
 
     this.sendingA2B = new Sending(planetA, planetB, app);
@@ -27,112 +34,8 @@ export default class Connection {
     this.make_sprite();
   }
 
-  get planetA() {
-    return this._planetA;
-  }
-
-  get planetB() {
-    return this._planetB;
-  }
-
   get app() {
     return this._app;
-  }
-
-  get_line_shape() {
-    const line = new PIXI.Graphics();
-    line.moveTo(this.width / 2, this.distance / 2);
-
-    line.lineTo(-this.width / 2, this.distance / 2);
-    line.lineTo(-this.width / 2, -this.distance / 2);
-    line.lineTo(this.width / 2, -this.distance / 2);
-    line.lineTo(this.width / 2, this.distance / 2);
-
-    line.closePath();
-    line.fill(0x000000);
-    line.stroke({
-      width: this.width / 2,
-      color: this.color,
-      alpha: 1,
-      join: "round",
-    });
-    return line;
-  }
-
-  get_hover_line_shape() {
-    const line = new PIXI.Graphics();
-    line.moveTo(this.width / 2, this.distance / 2);
-
-    line.lineTo(-this.width / 2, this.distance / 2);
-    line.lineTo(-this.width * 2, this.distance / 4);
-    line.lineTo(-this.width * 2, -this.distance / 4);
-    line.lineTo(-this.width / 2, -this.distance / 2);
-
-    line.lineTo(this.width / 2, -this.distance / 2);
-    line.lineTo(this.width * 2, -this.distance / 4);
-    line.lineTo(this.width * 2, this.distance / 4);
-    line.lineTo(this.width / 2, this.distance / 2);
-
-    line.closePath();
-    line.fill(this.color);
-    line.stroke({
-      width: 1,
-      color: this.color,
-      alpha: 1,
-      join: "round",
-    });
-
-    const cross_width = 10;
-    const cross_size = 40;
-    line.moveTo(cross_width, 0);
-    line.lineTo(cross_width + cross_size, cross_size);
-    line.lineTo(cross_width + cross_size, cross_size + cross_width);
-    line.lineTo(cross_size, cross_size + cross_width);
-    line.lineTo(0, cross_width);
-    line.lineTo(-cross_size, cross_width + cross_size);
-    line.lineTo(-cross_width - cross_size, cross_size + cross_width);
-    line.lineTo(-cross_size - cross_width, cross_size);
-    line.lineTo(-cross_width, 0);
-    line.lineTo(-cross_size - cross_width, -cross_size);
-    line.lineTo(-cross_size - cross_width, -cross_size - cross_width);
-    line.lineTo(-cross_size, -cross_size - cross_width);
-    line.lineTo(0, -cross_width);
-    line.lineTo(cross_size, -cross_width - cross_size);
-    line.lineTo(cross_width + cross_size, -cross_size - cross_width);
-    line.lineTo(cross_size + cross_width, -cross_size);
-    line.lineTo(cross_width, 0);
-
-    line.closePath();
-    line.fill(0xff0000);
-    return line;
-  }
-
-  get_hit_area() {
-    return new PIXI.Polygon([
-      this.width / 2,
-      this.distance / 2,
-
-      this.width * 5,
-      this.distance / 4,
-
-      this.width * 5,
-      -this.distance / 4,
-
-      this.width / 2,
-      -this.distance / 2,
-
-      -this.width / 2,
-      -this.distance / 2,
-
-      -this.width * 5,
-      -this.distance / 4,
-
-      -this.width * 5,
-      this.distance / 4,
-
-      -this.width / 2,
-      this.distance / 2,
-    ]);
   }
 
   make_sprite() {
@@ -142,7 +45,7 @@ export default class Connection {
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
     this.sprite.texture = this.app.renderer.generateTexture(
-      this.get_line_shape(this.color),
+      get_line_shape(this),
     );
 
     const x1 = this.planetA.x;
@@ -152,7 +55,7 @@ export default class Connection {
     const angle = Math.atan2(y2 - y1, x2 - x1);
 
     this.sprite.rotation = angle + Math.PI / 2;
-    this.sprite.hitArea = this.get_hit_area();
+    this.sprite.hitArea = get_hit_area(this);
     this.sprite.interactive = true;
     this.sprite.on("click", () => {
       this.sendingA2B.stop_sending_ships();
@@ -161,14 +64,14 @@ export default class Connection {
 
     this.sprite.on("pointerover", () => {
       this.sprite.texture = this.app.renderer.generateTexture(
-        this.get_hover_line_shape(0xff0000),
+        get_hover_line_shape(this),
       );
       this.sprite.alpha = 0.5;
     });
 
     this.sprite.on("pointerout", () => {
       this.sprite.texture = this.app.renderer.generateTexture(
-        this.get_line_shape(this.color),
+        get_line_shape(this),
       );
       this.sprite.alpha = 1;
     });

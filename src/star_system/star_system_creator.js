@@ -1,3 +1,5 @@
+// star_system_creator.js
+
 import Planet from "./../planet";
 import Connection from "./../connection";
 import * as PIXI from "pixi.js";
