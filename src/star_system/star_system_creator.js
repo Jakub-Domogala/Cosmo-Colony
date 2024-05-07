@@ -3,6 +3,7 @@
 import Planet from "./../planet";
 import Connection from "./../connection";
 import * as PIXI from "pixi.js";
+import { CONNECT_ALL_PLANETS } from "../settings";
 
 export function initPointer(starSystem) {
   starSystem.pointer = new PIXI.Graphics();
@@ -18,13 +19,33 @@ export function createMap(starSystem) {
 }
 
 function createConnections(starSystem, connections) {
-  for (let i = 0; i < connections.length; i++) {
-    let planetA = starSystem.planets_dict[connections[i].A];
-    let planetB = starSystem.planets_dict[connections[i].B];
-    const new_connection = new Connection(planetA, planetB, starSystem.app);
-    planetA.addConnection(new_connection);
-    planetB.addConnection(new_connection);
-    starSystem.connections.push(new_connection);
+  if (CONNECT_ALL_PLANETS) {
+    // if CONNECT_ALL_PLANETS is true, connect all planets to each other
+
+    // iterate over all planets values
+
+    for (let planetAName in starSystem.planets_dict) {
+      for (let planetBName in starSystem.planets_dict) {
+        let planetA = starSystem.planets_dict[planetAName];
+        let planetB = starSystem.planets_dict[planetBName];
+        if (planetA != planetB) {
+          let new_connection = new Connection(planetA, planetB, starSystem.app);
+
+          planetA.addConnection(new_connection);
+          planetB.addConnection(new_connection);
+          starSystem.connections.push(new_connection);
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < connections.length; i++) {
+      let planetA = starSystem.planets_dict[connections[i].A];
+      let planetB = starSystem.planets_dict[connections[i].B];
+      const new_connection = new Connection(planetA, planetB, starSystem.app);
+      planetA.addConnection(new_connection);
+      planetB.addConnection(new_connection);
+      starSystem.connections.push(new_connection);
+    }
   }
 }
 

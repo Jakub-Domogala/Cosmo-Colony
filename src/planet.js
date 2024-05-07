@@ -45,7 +45,7 @@ export default class Planet {
     this.sprite.scale.set(1);
     // this.sprite.hitArea = new PIXI.Circle(0, 0, 1 * this.r); didnt help
     this.updateColor();
-    this.display_name();
+    this.createPopulationLabel();
   }
 
   updateColor() {
@@ -73,7 +73,7 @@ export default class Planet {
     this.connections_dict[second_planet.name] = connection;
   }
 
-  display_name() {
+  createPopulationLabel() {
     const style = new PIXI.TextStyle({
       fontFamily: "Arial",
       fontSize: 22,
@@ -92,7 +92,7 @@ export default class Planet {
     this.connections_dict[destination_planet.name].start_sending_ships(this);
   }
 
-  updateLabel() {
+  updatePopulationLabel() {
     this.label.text = Math.round(this.population, 0).toString();
     this.label._didTextUpdate = true;
   }
@@ -105,16 +105,15 @@ export default class Planet {
         this.population = Math.abs(this.population);
         this.planetTakeover(this.owner.color, STATUS.OCCUPIED);
       }
-      this.updateLabel();
     } else if (this.owner == ship.owner) {
       this.population += 1;
-      this.updateLabel();
     }
+    this.updatePopulationLabel();
   }
 
   shipSent() {
     this.population -= 1;
-    this.updateLabel();
+    this.updatePopulationLabel();
   }
 
   update(delta) {
@@ -124,7 +123,7 @@ export default class Planet {
       this.breeding_time -= 1;
       // this.population += Math.log2(this.population * 2) * 0.1 * this.r * 0.02;
       this.population += 1;
-      this.updateLabel();
+      this.updatePopulationLabel();
     }
     // Update the planet
     // i guess we re only updating the color and health of the planet

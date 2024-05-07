@@ -18,7 +18,7 @@
       "name": "Venus",
       "occupied": false,
       "x": 400,
-      "y": 100,
+      "y": 150,
       "radius": 20
     },
     {
@@ -62,6 +62,13 @@
       "x": 700,
       "y": 600,
       "radius": 30
+    },
+    {
+      "name": "Pluto",
+      "occupied": false,
+      "x": 1000,
+      "y": 50,
+      "radius": 20
     }
   ],
   "connections": [
@@ -100,6 +107,14 @@
     {
       "A": "Jupiter",
       "B": "Earth"
+    },
+    {
+      "A": "Mercury",
+      "B": "Pluto"
+    },
+    {
+      "A": "Pluto",
+      "B": "Saturn"
     }
   ]
 }

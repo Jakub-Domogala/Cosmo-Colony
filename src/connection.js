@@ -99,7 +99,6 @@ export default class Connection {
   }
 
   check_2_ship_collision() {
-    if (!this.sendingA2B.owner || !this.sendingB2A.owner) return;
     let q1 = this.sendingA2B.ships_queue;
     let q2 = this.sendingB2A.ships_queue;
     if (q1.length == 0 || q2.length == 0 || q1[0].owner == q2[0].owner) return;
