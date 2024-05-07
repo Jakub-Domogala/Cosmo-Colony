@@ -79,10 +79,10 @@ export default class StarSystem {
     this.showPointerHighlightOff(this.draggedPlanet);
     this.app.stage.off("pointermove", this.onDragMove);
     this.app.stage.off("pointerup", this.onDragEnd);
-    if (!this.targetPlanet) return;
-    this.showPointerHighlightOff(this.targetPlanet);
-    // TODO SEND SHIPS
-    this.send_ships_if_connection(this.draggedPlanet, this.targetPlanet);
+    if (this.targetPlanet) {
+      this.showPointerHighlightOff(this.targetPlanet);
+      this.send_ships_if_connection(this.draggedPlanet, this.targetPlanet);
+    }
     this.draggedPlanet = null;
     this.targetPlanet = null;
   }

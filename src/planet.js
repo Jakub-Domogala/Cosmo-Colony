@@ -49,6 +49,11 @@ export default class Planet {
   }
 
   updateColor() {
+    // these 2 lines are workaround for some random bug
+    // that makes the planet nonresponsive
+    this.sprite.alpha = 0.5;
+    this.sprite.alpha = 1;
+
     const circle_texture = new PIXI.Graphics();
     circle_texture.circle(0, 0, this.r);
     circle_texture.fill(this.color);
@@ -82,7 +87,6 @@ export default class Planet {
     this.label.y = this.y;
     this.label.hitArea = new PIXI.Circle(0, 0, 0);
     this.label.eventMode = "dynamic";
-    console.log(this.label);
   }
 
   start_sending_ships(destination_planet) {
@@ -92,7 +96,6 @@ export default class Planet {
 
   updateLabel() {
     this.label.text = Math.round(this.population, 0).toString();
-    // this.label.didChange = true;
     this.label._didTextUpdate = true;
   }
 
