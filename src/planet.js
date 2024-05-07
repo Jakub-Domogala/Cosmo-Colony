@@ -54,11 +54,9 @@ export default class Planet {
     this.sprite.alpha = 0.5;
     this.sprite.alpha = 1;
 
-    const circle_texture = new PIXI.Graphics();
-    circle_texture.circle(0, 0, this.r);
-    circle_texture.fill(this.color);
-    const texture = this.app.renderer.generateTexture(circle_texture);
-    this.sprite.texture = texture;
+    this.sprite.texture = this.app.renderer.generateTexture(
+      new PIXI.Graphics().circle(0, 0, this.r).fill(this.color),
+    );
     this.sprite.didChange = true;
   }
 
