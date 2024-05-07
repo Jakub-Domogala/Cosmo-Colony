@@ -6,7 +6,7 @@ import { COLOR_PLANET_NEUTRAL } from "./settings";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
-    this.attack_speed = 5;
+    this.attack_speed = 6;
     this.breed_rate = player ? 1 : 0.5;
     this.population = player ? 100 : r;
 

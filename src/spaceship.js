@@ -5,7 +5,7 @@ import { distance } from "./utils";
 
 export default class Spaceship {
   constructor(owner, origin_planet, destination_planet, app) {
-    this.ship_size = 8;
+    this.ship_size = 5;
     this.speed = 25;
 
     this.current_speed = 40.0;
@@ -77,7 +77,7 @@ export default class Spaceship {
     shape.lineTo(0.7 * this.ship_size, -1 * this.ship_size);
     shape.lineTo(0, 0);
     shape.fill(this.owner.color);
-    shape.stroke({ width: 2, color: 0x88aa88, alpha: 1, join: "round" });
+    shape.stroke({ width: 2, color: this.owner.color, alpha: 1, join: "round" });
     return shape;
   }
 
