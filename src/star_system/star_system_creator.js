@@ -30,7 +30,20 @@ function createConnections(starSystem, connections) {
 
 function createPlanets(starSystem, planets) {
   let player_idx = 0;
+  let occupied_count = 0;
   for (let i = 0; i < planets.length; i++) {
+    if (planets[i].occupied) occupied_count++;
+  }
+  occupied_count =
+    Math.floor(occupied_count / starSystem.players.length) *
+    starSystem.players.length;
+  for (let i = 0; i < planets.length; i++) {
+    if (planets[i].occupied) {
+      occupied_count--;
+      if (occupied_count < 0) {
+        planets[i].occupied = false;
+      }
+    }
     let player_assign = null;
     if (starSystem.players.length > 0 && planets[i].occupied) {
       player_assign = starSystem.players[player_idx];
