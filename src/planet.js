@@ -24,6 +24,7 @@ export default class Planet {
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
     this.connections_dict = {};
+    this.connected_planets = [];
 
     this.this_system = system;
 
@@ -71,6 +72,7 @@ export default class Planet {
     const second_planet =
       connection.planetA == this ? connection.planetB : connection.planetA;
     this.connections_dict[second_planet.name] = connection;
+    this.connected_planets.push(second_planet);
   }
 
   createPopulationLabel() {

@@ -133,5 +133,10 @@ export default class StarSystem {
       // console.log(planet);
       planet.update(delta);
     });
+
+    // make bots move (all players but not first one)
+    for (let i = 0; i < this.players.length; i++) {
+      this.players[i].makeMove(delta);
+    }
   }
 }

@@ -85,6 +85,13 @@ function createPlanets(starSystem, planets) {
 }
 
 function addPlanetsAndConnectionsToStage(starSystem) {
+  for (let planet_name in starSystem.planets_dict) {
+    let planet = starSystem.planets_dict[planet_name];
+    starSystem.players.forEach((player) => {
+      player.planets.push(planet);
+    });
+  }
+
   starSystem.connections.forEach((connection) =>
     starSystem.app.stage.addChild(connection.sprite),
   );

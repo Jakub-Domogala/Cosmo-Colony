@@ -4,8 +4,6 @@ import { getApp, getPlayers, getStarSystem } from "./src/init_utils.js";
   // INIT APP
   const app = await getApp();
   const players = getPlayers(app);
-
-  // MAKE SYSTEM
   const starSystem = await getStarSystem(app, players);
 
   // RUN GAME LOOP
