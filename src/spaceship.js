@@ -2,14 +2,14 @@
 
 import * as PIXI from "pixi.js";
 import { distance } from "./utils";
+import { SHIP_ACC, SHIP_INIT_SPEED } from "./settings";
 
 export default class Spaceship {
   constructor(owner, origin_planet, destination_planet, app) {
     this.ship_size = 5;
-    this.speed = 25;
 
-    this.current_speed = 40.0;
-    this.acceleration_per_sec = 200.0;
+    this.speed = SHIP_INIT_SPEED;
+    this.acceleration_per_sec = SHIP_ACC;
 
     this.owner = owner;
     this.origin_planet = origin_planet;
@@ -77,23 +77,28 @@ export default class Spaceship {
     shape.lineTo(0.7 * this.ship_size, -1 * this.ship_size);
     shape.lineTo(0, 0);
     shape.fill(this.owner.color);
-    shape.stroke({ width: 2, color: this.owner.color, alpha: 1, join: "round" });
+    shape.stroke({
+      width: 2,
+      color: this.owner.color,
+      alpha: 1,
+      join: "round",
+    });
     return shape;
   }
 
-  get_current_speed(delta) {
-    this.current_speed +=
+  get_speed(delta) {
+    this.speed +=
       this.acceleration_per_sec *
       delta *
       (this.travel_percentage > 0.5 ? -0.95 : 1);
-    return this.current_speed;
+    return this.speed;
   }
 
   update_position(delta) {
     const A = this.start_cordinates;
     const B = this.end_cordinates;
     const distance = Math.sqrt((B.x - A.x) ** 2 + (B.y - A.y) ** 2);
-    const speed = this.get_current_speed(delta);
+    const speed = this.get_speed(delta);
     const x =
       this.current_cordinates.x + ((speed * (B.x - A.x)) / distance) * delta;
     const y =

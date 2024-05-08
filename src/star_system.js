@@ -1,6 +1,10 @@
 // star_system.js
 
-import { createMap, initPointer } from "./star_system/star_system_creator.js";
+import {
+  findMinMaxR,
+  createMap,
+  initPointer,
+} from "./star_system/star_system_creator.js";
 import { distance } from "./utils.js";
 import {
   COLOR_INDICATOR_SUCCESS,
@@ -18,7 +22,10 @@ export default class StarSystem {
     this.draggedPlanet = null;
     this.targetPlanet = null;
     this.pointer = null;
+    this.R = null;
+    this.r = null;
 
+    findMinMaxR(this);
     createMap(this);
     initPointer(this);
   }

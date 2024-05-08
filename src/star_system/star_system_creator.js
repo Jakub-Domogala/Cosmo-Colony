@@ -18,6 +18,11 @@ export function createMap(starSystem) {
   addPlanetsAndConnectionsToStage(starSystem);
 }
 
+export function findMinMaxR(starSystem) {
+  starSystem.r = 20;
+  starSystem.R = 50;
+}
+
 function createConnections(starSystem, connections) {
   if (CONNECT_ALL_PLANETS) {
     // if CONNECT_ALL_PLANETS is true, connect all planets to each other

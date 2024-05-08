@@ -13,7 +13,7 @@ export default class Player {
   makeMove(delta) {
     if (!this.isBot) return;
     this.timeSinceLastMove += delta;
-    if (this.isMoving(this.timeSinceLastMove)) {
+    if (this.isMoving(this.timeSinceLastMove * 2)) {
       this.timeSinceLastMove = 0;
       this.attackWeakestPlanet();
     }

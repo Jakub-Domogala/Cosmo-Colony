@@ -2,6 +2,7 @@ import { Application } from "pixi.js";
 import StarSystem from "./star_system.js";
 import Player from "./player.js";
 import {
+  BOTS_ONLY,
   COLORS_PLAYERS,
   INPUT_SYSTEM_JSON,
   PLAYERS_AMOUNT,
@@ -19,7 +20,9 @@ export async function getApp() {
 export function getPlayers(app) {
   const players = [];
   for (let i = 0; i < Math.min(PLAYERS_AMOUNT, COLORS_PLAYERS.length); i++)
-    players.push(new Player(`player${i}`, COLORS_PLAYERS[i], app, i > -1));
+    players.push(
+      new Player(`player${i}`, COLORS_PLAYERS[i], app, i > 0 || BOTS_ONLY),
+    );
   return players;
 }
 

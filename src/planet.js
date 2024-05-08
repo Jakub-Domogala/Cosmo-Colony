@@ -2,13 +2,31 @@
 
 import * as PIXI from "pixi.js";
 import STATUS from "./planet/planet_status_enum";
-import { COLOR_PLANET_NEUTRAL } from "./settings";
+import {
+  COLOR_PLANET_NEUTRAL,
+  PLANET_ATTACK_SPEED,
+  PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE,
+  PLANET_INIT_POPULATION,
+  PLANET_NEUTRAL_BREEDRATE,
+  PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER,
+  PLANET_OCCUPIED_BREEDRATE,
+  PLANET_RANDOM_BREEDING_INFLUENCE,
+} from "./settings";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
-    this.attack_speed = 6;
-    this.breed_rate = player ? 1 : 0.5;
-    this.population = player ? 100 : r;
+    // this.attack_speed = 6;
+    this.attack_speed =
+      PLANET_ATTACK_SPEED *
+      (1 + (r / system.r - 1) * PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE);
+    this.breed_rate = player
+      ? PLANET_OCCUPIED_BREEDRATE
+      : PLANET_NEUTRAL_BREEDRATE;
+    this.population = player
+      ? PLANET_INIT_POPULATION
+      : PLANET_INIT_POPULATION *
+        (r / system.r) *
+        PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER;
 
     this.breeding_time = 0.0;
     this.name = name;
@@ -118,12 +136,22 @@ export default class Planet {
     this.updatePopulationLabel();
   }
 
+  calculateBreedindDelta(delta) {
+    return (
+      delta *
+      this.breed_rate *
+      this.r *
+      0.005 *
+      (Math.log2(this.population + 1) + 1) *
+      (1 + (Math.random() - 0.5) * PLANET_RANDOM_BREEDING_INFLUENCE)
+    );
+  }
+
   update(delta) {
-    this.breeding_time += delta * this.breed_rate;
+    this.breeding_time += this.calculateBreedindDelta(delta);
     // if (this.name == "Mars") console.log("Mars time: ", this.breeding_time);
-    if (this.breeding_time >= 1) {
+    while (this.breeding_time >= 1) {
       this.breeding_time -= 1;
-      // this.population += Math.log2(this.population * 2) * 0.1 * this.r * 0.02;
       this.population += 1;
       this.updatePopulationLabel();
     }
