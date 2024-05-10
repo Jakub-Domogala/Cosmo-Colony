@@ -24,7 +24,6 @@ export default class Spaceship {
     this.travel_percentage = 0.0;
     this.travel_distance = 0;
     this.offset = 8;
-    this._kill_distance;
 
     this.calculate_start_cordinates_distance_and_rotation();
     this.make_sprite();

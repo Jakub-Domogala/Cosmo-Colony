@@ -2,14 +2,7 @@
 
 import Planet from "./../planet";
 import Connection from "./../connection";
-import * as PIXI from "pixi.js";
 import { CONNECT_ALL_PLANETS } from "../settings";
-
-export function initPointer(starSystem) {
-  starSystem.pointer = new PIXI.Graphics();
-  starSystem.pointer.hitArea = new PIXI.Circle(0, 0, 0); // disable hit area
-  starSystem.app.stage.addChild(starSystem.pointer);
-}
 
 export function createMap(starSystem) {
   let planetData = starSystem.data;

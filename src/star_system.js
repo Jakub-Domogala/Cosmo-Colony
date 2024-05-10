@@ -1,16 +1,10 @@
 // star_system.js
 
-import {
-  findMinMaxR,
-  createMap,
-  initPointer,
-} from "./star_system/star_system_creator.js";
+import { findMinMaxR, createMap } from "./star_system/star_system_creator.js";
 import { distance } from "./utils.js";
-import {
-  COLOR_INDICATOR_SUCCESS,
-  COLOR_INDICATOR_FAIL,
-  COLOR_INDICATOR_NEUTRAL,
-} from "./settings.js";
+import { COLOR_INDICATOR_SUCCESS, COLOR_INDICATOR_FAIL } from "./settings.js";
+import Pointer from "./pointer.js";
+import STATUS from "./planet/planet_status_enum.js";
 
 export default class StarSystem {
   constructor(data, app, players) {
@@ -21,38 +15,45 @@ export default class StarSystem {
     this.connections = [];
     this.draggedPlanet = null;
     this.targetPlanet = null;
-    this.pointer = null;
+    this.newptr = null;
     this.R = null;
     this.r = null;
+    this.lastDT = 0;
 
     findMinMaxR(this);
     createMap(this);
-    initPointer(this);
+    this.newptr = new Pointer(this.app);
+    this.app.stage.addChild(this.newptr.sprite);
   }
 
   onPlanetDrag(planet) {
+    console.log(planet.status);
+    if (planet.status == STATUS.NEUTRAL || planet.owner.isBot) {
+      console.log("You can only drag your planets!");
+      return;
+    }
     this.draggedPlanet = planet;
     this.targetPlanet = null;
-    this.showPointerHighlightOn(planet);
+    this.planetHighlightOn(planet);
     this.app.stage.on("pointermove", this.onDragMove.bind(this));
     this.app.stage.on("pointerup", this.onDragEnd.bind(this));
-
-    // this.app.stage.on("pointercancel", (event) => this.pointer.clear());
-    // this.app.stage.on("pointerupoutside", (event) => this.pointer.clear());
-    // this.app.stage.on("pointertap", (event) => this.pointer.clear());
-    // this.app.stage.on("click", (event) => this.pointer.clear());
   }
 
   onDragMove(event) {
     if (!this.draggedPlanet) return;
     const collision = this.findIfPlanetCollision(event.data.global);
     if (!collision || collision == this.draggedPlanet) {
-      this.drawPointer(this.draggedPlanet.sprite.position, event.data.global);
+      this.newptr.setPointerPosition(
+        this.draggedPlanet.sprite.position,
+        event.data.global,
+        this.lastDT,
+      );
     } else {
       this.targetPlanet = collision;
-      this.drawPointer(
+      this.newptr.setPointerPosition(
         this.draggedPlanet.sprite.position,
         this.targetPlanet.sprite.position,
+        this.lastDT,
         this.findIfPlanetsConnection(this.draggedPlanet, this.targetPlanet)
           ? COLOR_INDICATOR_SUCCESS
           : COLOR_INDICATOR_FAIL,
@@ -63,7 +64,7 @@ export default class StarSystem {
   findIfPlanetCollision(position) {
     for (let planet in this.planets_dict) {
       const p_obj = this.planets_dict[planet];
-      if (distance(p_obj.sprite.position, position) < p_obj.r) return p_obj;
+      if (distance(p_obj.sprite.position, position) < p_obj.r + 2) return p_obj;
     }
     return null;
   }
@@ -81,13 +82,13 @@ export default class StarSystem {
 
   onDragEnd() {
     if (!this.draggedPlanet) return;
-    this.pointer.clear();
+    this.newptr.isActive = false;
     if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
-    this.showPointerHighlightOff(this.draggedPlanet);
+    this.planetHighlightOff(this.draggedPlanet);
     this.app.stage.off("pointermove", this.onDragMove);
     this.app.stage.off("pointerup", this.onDragEnd);
     if (this.targetPlanet) {
-      this.showPointerHighlightOff(this.targetPlanet);
+      this.planetHighlightOff(this.targetPlanet);
       this.send_ships_if_connection(this.draggedPlanet, this.targetPlanet);
     }
     this.draggedPlanet = null;
@@ -97,53 +98,36 @@ export default class StarSystem {
   onDragOver(planet) {
     if (planet == this.draggedPlanet) return;
     this.targetPlanet = planet;
-    this.showPointerHighlightOn(this.targetPlanet);
+    this.planetHighlightOn(this.targetPlanet);
   }
 
   onDragOut(planet) {
     if (planet != this.draggedPlanet) {
-      this.showPointerHighlightOff(planet);
+      this.planetHighlightOff(planet);
       this.targetPlanet = null;
     }
   }
 
-  drawPointer(positionA, positionB, color = COLOR_INDICATOR_NEUTRAL) {
-    this.pointer.clear();
-    this.pointer.moveTo(positionA.x, positionA.y);
-    this.pointer.lineTo(positionB.x, positionB.y);
-    this.pointer.fill();
-    this.pointer.stroke({ width: 2, color: color });
-  }
-
-  showPointerHighlightOn(planet) {
+  planetHighlightOn(planet) {
     // TODO might add some more gradient changes here
     planet.sprite.alpha = 0.5;
     planet.sprite.scale.set(1.2);
-    // planet.sprite.tint = 0x999999;
   }
 
-  showPointerHighlightOff(planet) {
+  planetHighlightOff(planet) {
     // TODO might add some more gradient changes here
     planet.sprite.alpha = 1;
     planet.sprite.scale.set(1);
-    // planet.sprite.tint = 0xffffff;
   }
 
   update(delta) {
-    // update connections
-    for (let connection of this.connections) {
-      connection.update(delta);
-    }
-    // update planets
-    // console.log(this.planets_dict);
+    this.lastDT = delta;
+    for (let connection of this.connections) connection.update(delta);
     Object.values(this.planets_dict).forEach((planet) => {
-      // console.log(planet);
       planet.update(delta);
     });
-
-    // make bots move (all players but not first one)
-    for (let i = 0; i < this.players.length; i++) {
+    for (let i = 0; i < this.players.length; i++)
       this.players[i].makeMove(delta);
-    }
+    this.newptr.update(delta);
   }
 }

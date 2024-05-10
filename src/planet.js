@@ -12,6 +12,7 @@ import {
   PLANET_OCCUPIED_BREEDRATE,
   PLANET_RANDOM_BREEDING_INFLUENCE,
 } from "./settings";
+import { darkenColor } from "./common/common_utils";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
@@ -36,7 +37,7 @@ export default class Planet {
     this.y = y;
     this.app = system.app;
     this.color = color ? color : COLOR_PLANET_NEUTRAL;
-    this.status = player !== null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
+    this.status = player == null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
     this.owner = player;
     this.sprite = null;
     this.make_sprite();
@@ -62,7 +63,7 @@ export default class Planet {
     this.sprite.y = this.y;
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
-    // this.sprite.hitArea = new PIXI.Circle(0, 0, 1 * this.r); didnt help
+    this.sprite.hitArea = new PIXI.Circle(0, 0, 1.1 * this.r);
     this.updateColor();
     this.createPopulationLabel();
   }
@@ -74,8 +75,17 @@ export default class Planet {
     this.sprite.alpha = 1;
 
     this.sprite.texture = this.app.renderer.generateTexture(
-      new PIXI.Graphics().circle(0, 0, this.r).fill(this.color),
+      new PIXI.Graphics()
+        .circle(0, 0, this.r)
+        .fill(this.color)
+        .stroke({
+          width: 2,
+          color: darkenColor(this.color, 0.5),
+          alpha: 1,
+          join: "round",
+        }),
     );
+
     this.sprite.didChange = true;
   }
 
