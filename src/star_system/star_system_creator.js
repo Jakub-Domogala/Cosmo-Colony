@@ -5,15 +5,24 @@ import Connection from "./../connection";
 import { CONNECT_ALL_PLANETS } from "../settings";
 
 export function createMap(starSystem) {
-  let planetData = starSystem.data;
-  createPlanets(starSystem, planetData.planets);
-  createConnections(starSystem, planetData.connections);
+  let data = starSystem.data;
+  findMinMaxR(starSystem, data.planets);
+  createPlanets(starSystem, data.planets);
+  createConnections(starSystem, data.connections);
   addPlanetsAndConnectionsToStage(starSystem);
 }
 
-export function findMinMaxR(starSystem) {
-  starSystem.r = 20;
-  starSystem.R = 50;
+export function findMinMaxR(starSystem, planets) {
+  starSystem.r = 1000;
+  starSystem.R = 10;
+  for (let i = 0; i < planets.length; i++) {
+    let planet = planets[i];
+
+    console.log(planet.radius);
+    starSystem.r = Math.min(starSystem.r, planet.radius);
+    starSystem.R = Math.max(starSystem.R, planet.radius);
+  }
+  console.log(starSystem.r, starSystem.R);
 }
 
 function createConnections(starSystem, connections) {

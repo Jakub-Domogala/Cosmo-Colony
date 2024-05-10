@@ -20,7 +20,6 @@ export default class StarSystem {
     this.r = null;
     this.lastDT = 0;
 
-    findMinMaxR(this);
     createMap(this);
     this.newptr = new Pointer(this.app);
     this.app.stage.addChild(this.newptr.sprite);
