@@ -1,7 +1,7 @@
 // star_system.js
 
 import { findMinMaxR, createMap } from "./star_system/star_system_creator.js";
-import { distance } from "./utils.js";
+import { distance } from "./common/common_utils.js";
 import { COLOR_INDICATOR_SUCCESS, COLOR_INDICATOR_FAIL } from "./settings.js";
 import Pointer from "./pointer.js";
 import STATUS from "./planet/planet_status_enum.js";
@@ -34,7 +34,7 @@ export default class StarSystem {
     }
     this.draggedPlanet = planet;
     this.targetPlanet = null;
-    this.planetHighlightOn(planet);
+    planet.highlightOn();
     this.app.stage.on("pointermove", this.onDragMove.bind(this));
     this.app.stage.on("pointerup", this.onDragEnd.bind(this));
   }
@@ -84,11 +84,11 @@ export default class StarSystem {
     if (!this.draggedPlanet) return;
     this.newptr.isActive = false;
     if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
-    this.planetHighlightOff(this.draggedPlanet);
+    this.draggedPlanet.highlightOff();
     this.app.stage.off("pointermove", this.onDragMove);
     this.app.stage.off("pointerup", this.onDragEnd);
     if (this.targetPlanet) {
-      this.planetHighlightOff(this.targetPlanet);
+      this.targetPlanet.highlightOff();
       this.send_ships_if_connection(this.draggedPlanet, this.targetPlanet);
     }
     this.draggedPlanet = null;
@@ -98,27 +98,27 @@ export default class StarSystem {
   onDragOver(planet) {
     if (planet == this.draggedPlanet) return;
     this.targetPlanet = planet;
-    this.planetHighlightOn(this.targetPlanet);
+    planet.highlightOn();
   }
 
   onDragOut(planet) {
     if (planet != this.draggedPlanet) {
-      this.planetHighlightOff(planet);
+      planet.highlightOff();
       this.targetPlanet = null;
     }
   }
 
-  planetHighlightOn(planet) {
-    // TODO might add some more gradient changes here
-    planet.sprite.alpha = 0.5;
-    planet.sprite.scale.set(1.2);
-  }
+  // planetHighlightOn(planet) {
+  //   // TODO might add some more gradient changes here
+  //   planet.sprite.alpha = 0.5;
+  //   planet.sprite.scale.set(1.2);
+  // }
 
-  planetHighlightOff(planet) {
-    // TODO might add some more gradient changes here
-    planet.sprite.alpha = 1;
-    planet.sprite.scale.set(1);
-  }
+  // planetHighlightOff(planet) {
+  //   // TODO might add some more gradient changes here
+  //   planet.sprite.alpha = 1;
+  //   planet.sprite.scale.set(1);
+  // }
 
   update(delta) {
     this.lastDT = delta;

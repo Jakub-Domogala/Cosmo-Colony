@@ -2,7 +2,7 @@
 
 import * as PIXI from "pixi.js";
 import Sending from "./connection/sending.js";
-import { distance } from "./utils.js";
+import { distance } from "./common/common_utils.js";
 import { COLOR_CONNECTION } from "./settings.js";
 import {
   get_line_shape,

@@ -19,3 +19,13 @@ export function darkenColor(color, factor) {
       .padStart(6, "0"); // padStart ensures each component has at least two digits
   return darkenedColor;
 }
+
+export function calc_gradiental_change(current, target, dt, speed = 20) {
+  return current + (target - current) * (1.0 - Math.exp(-speed * dt));
+}
+
+export function distance(positionA, positionB) {
+  return Math.sqrt(
+    (positionB.x - positionA.x) ** 2 + (positionB.y - positionA.y) ** 2,
+  );
+}

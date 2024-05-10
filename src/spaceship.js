@@ -1,7 +1,7 @@
 // spaceship.js
 
 import * as PIXI from "pixi.js";
-import { distance } from "./utils";
+import { distance } from "./common/common_utils.js";
 import { SHIP_ACC, SHIP_INIT_SPEED } from "./settings";
 
 export default class Spaceship {

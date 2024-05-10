@@ -12,7 +12,7 @@ import {
   PLANET_OCCUPIED_BREEDRATE,
   PLANET_RANDOM_BREEDING_INFLUENCE,
 } from "./settings";
-import { darkenColor } from "./common/common_utils";
+import { darkenColor, calc_gradiental_change } from "./common/common_utils";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
@@ -40,6 +40,10 @@ export default class Planet {
     this.status = player == null ? STATUS.NEUTRAL : STATUS.OCCUPIED;
     this.owner = player;
     this.sprite = null;
+
+    this.target_alpha = 1.0;
+    this.target_scale = 1.0;
+
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
     this.connections_dict = {};
@@ -88,6 +92,28 @@ export default class Planet {
 
     this.sprite.didChange = true;
   }
+
+  highlightOn() {
+    this.target_alpha = 0.5;
+    this.target_scale = 1.2;
+  }
+
+  highlightOff() {
+    this.target_alpha = 1;
+    this.target_scale = 1;
+  }
+
+  // planetHighlightOn(planet) {
+  //   // TODO might add some more gradient changes here
+  //   planet.sprite.alpha = 0.5;
+  //   planet.sprite.scale.set(1.2);
+  // }
+
+  // planetHighlightOff(planet) {
+  //   // TODO might add some more gradient changes here
+  //   planet.sprite.alpha = 1;
+  //   planet.sprite.scale.set(1);
+  // }
 
   planetTakeover(newColor, newStatus) {
     this.color = newColor;
@@ -167,6 +193,14 @@ export default class Planet {
     }
     // Update the planet
     // i guess we re only updating the color and health of the planet
+    this.sprite.alpha = calc_gradiental_change(
+      this.sprite.alpha,
+      this.target_alpha,
+      delta,
+    );
+    this.sprite.scale.set(
+      calc_gradiental_change(this.sprite.scale.x, this.target_scale, delta),
+    );
   }
 
   onMouseDown(event) {
