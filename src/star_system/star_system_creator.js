@@ -36,7 +36,12 @@ function createConnections(starSystem, connections) {
         let planetA = starSystem.planets_dict[planetAName];
         let planetB = starSystem.planets_dict[planetBName];
         if (planetA != planetB) {
-          let new_connection = new Connection(planetA, planetB, starSystem.app);
+          let new_connection = new Connection(
+            planetA,
+            planetB,
+            starSystem.app,
+            starSystem,
+          );
 
           planetA.addConnection(new_connection);
           planetB.addConnection(new_connection);
@@ -48,7 +53,12 @@ function createConnections(starSystem, connections) {
     for (let i = 0; i < connections.length; i++) {
       let planetA = starSystem.planets_dict[connections[i].A];
       let planetB = starSystem.planets_dict[connections[i].B];
-      const new_connection = new Connection(planetA, planetB, starSystem.app);
+      const new_connection = new Connection(
+        planetA,
+        planetB,
+        starSystem.app,
+        starSystem,
+      );
       planetA.addConnection(new_connection);
       planetB.addConnection(new_connection);
       starSystem.connections.push(new_connection);
@@ -92,12 +102,14 @@ function createPlanets(starSystem, planets) {
 }
 
 function addPlanetsAndConnectionsToStage(starSystem) {
+  const planets_list = [];
   for (let planet_name in starSystem.planets_dict) {
     let planet = starSystem.planets_dict[planet_name];
-    starSystem.players.forEach((player) => {
-      player.planets.push(planet);
-    });
+    planets_list.push(planet);
   }
+  starSystem.players.forEach((player) => {
+    player.planets = planets_list;
+  });
 
   starSystem.connections.forEach((connection) =>
     starSystem.app.stage.addChild(connection.sprite),

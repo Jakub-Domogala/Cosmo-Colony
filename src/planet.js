@@ -12,7 +12,10 @@ import {
   PLANET_OCCUPIED_BREEDRATE,
   PLANET_RANDOM_BREEDING_INFLUENCE,
 } from "./settings";
-import { darkenColor, calc_gradiental_change } from "./common/common_utils";
+import {
+  darkenColor,
+  calc_gradiental_change_float,
+} from "./common/common_utils";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
@@ -23,11 +26,13 @@ export default class Planet {
     this.breed_rate = player
       ? PLANET_OCCUPIED_BREEDRATE
       : PLANET_NEUTRAL_BREEDRATE;
-    this.population = player
-      ? PLANET_INIT_POPULATION
-      : PLANET_INIT_POPULATION *
-        (r / system.r) *
-        PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER;
+    this.population = Math.ceil(
+      player
+        ? PLANET_INIT_POPULATION
+        : PLANET_INIT_POPULATION *
+            (r / system.r) *
+            PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER,
+    );
 
     this.breeding_time = 0.0;
     this.name = name;
@@ -193,13 +198,17 @@ export default class Planet {
     }
     // Update the planet
     // i guess we re only updating the color and health of the planet
-    this.sprite.alpha = calc_gradiental_change(
+    this.sprite.alpha = calc_gradiental_change_float(
       this.sprite.alpha,
       this.target_alpha,
       delta,
     );
     this.sprite.scale.set(
-      calc_gradiental_change(this.sprite.scale.x, this.target_scale, delta),
+      calc_gradiental_change_float(
+        this.sprite.scale.x,
+        this.target_scale,
+        delta,
+      ),
     );
   }
 

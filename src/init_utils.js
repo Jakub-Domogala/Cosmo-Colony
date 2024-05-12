@@ -7,6 +7,7 @@ import {
   INPUT_SYSTEM_JSON,
   PLAYERS_AMOUNT,
 } from "./settings.js";
+import STRATEGY_NAMES from "./player/strategy_names_enum.js";
 
 export async function getApp() {
   const app = new Application();
@@ -21,7 +22,12 @@ export function getPlayers(app) {
   const players = [];
   for (let i = 0; i < Math.min(PLAYERS_AMOUNT, COLORS_PLAYERS.length); i++)
     players.push(
-      new Player(`player${i}`, COLORS_PLAYERS[i], app, i > 0 || BOTS_ONLY),
+      new Player(
+        `player${i}`,
+        COLORS_PLAYERS[i],
+        app,
+        i > 0 || BOTS_ONLY ? STRATEGY_NAMES.PRIMITIVE : STRATEGY_NAMES.HUMAN,
+      ),
     );
   return players;
 }

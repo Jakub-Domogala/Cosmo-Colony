@@ -3,7 +3,15 @@
 import * as PIXI from "pixi.js";
 import Sending from "./connection/sending.js";
 import { distance } from "./common/common_utils.js";
-import { COLOR_CONNECTION } from "./settings.js";
+import {
+  COLOR_CONNECTION,
+  COLOR_CONNECTION_HIGHLIGHT,
+  COLOR_CONNECTION_HIGHLIGHT_MY,
+} from "./settings.js";
+import {
+  calc_gradiental_change_float,
+  calc_gradiental_change_color,
+} from "./common/common_utils.js";
 import {
   get_line_shape,
   get_hit_area,
@@ -11,7 +19,10 @@ import {
 } from "./connection/connection_utils.js";
 
 export default class Connection {
-  constructor(planetA, planetB, app) {
+  constructor(planetA, planetB, app, starSystem) {
+    this.starSystem = starSystem;
+    this.app = app;
+
     this.sprite = null;
     this.width = 4;
     this.color = COLOR_CONNECTION;
@@ -25,17 +36,14 @@ export default class Connection {
     this.planetB = planetB;
     this.distance = distance(planetA, planetB);
 
+    this.target = { scale: 1, alpha: 0.5, tint: COLOR_CONNECTION };
+
     this.sendingA2B = new Sending(planetA, planetB, app);
     this.sendingB2A = new Sending(planetB, planetA, app);
 
     // add sprite on click to cancel sending ships
 
-    this._app = app;
     this.make_sprite();
-  }
-
-  get app() {
-    return this._app;
   }
 
   make_sprite() {
@@ -57,24 +65,9 @@ export default class Connection {
     this.sprite.rotation = angle + Math.PI / 2;
     this.sprite.hitArea = get_hit_area(this);
     this.sprite.interactive = true;
-    this.sprite.on("click", () => {
-      this.sendingA2B.stop_sending_ships();
-      this.sendingB2A.stop_sending_ships();
-    });
-
-    this.sprite.on("pointerover", () => {
-      this.sprite.texture = this.app.renderer.generateTexture(
-        get_hover_line_shape(this),
-      );
-      this.sprite.alpha = 0.5;
-    });
-
-    this.sprite.on("pointerout", () => {
-      this.sprite.texture = this.app.renderer.generateTexture(
-        get_line_shape(this),
-      );
-      this.sprite.alpha = 1;
-    });
+    this.sprite.on("click", this.click.bind(this));
+    this.sprite.on("pointerover", this.pointerOver.bind(this));
+    this.sprite.on("pointerout", this.pointerOut.bind(this));
   }
 
   start_sending_ships(origin_planet) {
@@ -96,6 +89,24 @@ export default class Connection {
     this.check_2_ship_collision();
     this.sendingA2B.update(delta);
     this.sendingB2A.update(delta);
+    this.sprite.scale.x = calc_gradiental_change_float(
+      this.sprite.scale.x,
+      this.target.scale,
+      delta,
+      10,
+    );
+    this.sprite.alpha = calc_gradiental_change_float(
+      this.sprite.alpha,
+      this.target.alpha,
+      delta,
+      10,
+    );
+    this.sprite.tint = calc_gradiental_change_color(
+      this.sprite.tint,
+      this.target.tint,
+      delta,
+      2,
+    );
   }
 
   check_2_ship_collision() {
@@ -107,5 +118,52 @@ export default class Connection {
       this.sendingB2A.delete_last_ship();
       // TODO make explosion
     }
+  }
+
+  isAMyPlanetThatIsSending() {
+    return (
+      this.planetA.owner &&
+      !this.planetA.owner.isBot &&
+      this.sendingA2B.isSending()
+    );
+  }
+
+  isBMyPlanetThatIsSending() {
+    return (
+      this.planetB.owner &&
+      !this.planetB.owner.isBot &&
+      this.sendingB2A.isSending()
+    );
+  }
+
+  pointerOver() {
+    if (
+      this.starSystem.draggedPlanet == null &&
+      (this.isAMyPlanetThatIsSending() || this.isBMyPlanetThatIsSending())
+    ) {
+      this.sprite.texture = this.app.renderer.generateTexture(
+        get_hover_line_shape(this),
+      );
+      this.target.tint = COLOR_CONNECTION_HIGHLIGHT_MY;
+    } else {
+      // this.sprite.scale.y = 1.5;
+      this.target.scale = 2;
+      this.target.tint = COLOR_CONNECTION_HIGHLIGHT;
+    }
+    this.target.alpha = 1;
+  }
+
+  pointerOut() {
+    this.sprite.texture = this.app.renderer.generateTexture(
+      get_line_shape(this),
+    );
+    this.target.alpha = 0.5;
+    this.target.scale = 1;
+    this.target.tint = COLOR_CONNECTION;
+  }
+
+  click() {
+    if (this.isAMyPlanetThatIsSending) this.sendingA2B.stop_sending_ships();
+    if (this.isBMyPlanetThatIsSending) this.sendingB2A.stop_sending_ships();
   }
 }

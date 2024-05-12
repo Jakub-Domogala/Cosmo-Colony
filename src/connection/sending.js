@@ -25,6 +25,10 @@ export default class Sending {
     this.owner = null;
   }
 
+  isSending() {
+    return this.owner !== null;
+  }
+
   update(delta) {
     // update ships position
     this.sending_time += delta * this.sending_speed;

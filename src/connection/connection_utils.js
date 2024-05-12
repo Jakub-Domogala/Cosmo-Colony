@@ -10,10 +10,10 @@ export function get_line_shape(this_connection) {
   line.lineTo(this_connection.width / 2, this_connection.distance / 2);
 
   line.closePath();
-  line.fill(0x000000);
+  line.fill(0xffffff);
   line.stroke({
     width: this_connection.width / 2,
-    color: this_connection.color,
+    color: 0xffffff,
     alpha: 1,
     join: "round",
   });
@@ -66,7 +66,7 @@ export function get_hover_line_shape(this_connection) {
   line.fill(this_connection.color);
   line.stroke({
     width: 1,
-    color: this_connection.color,
+    color: 0xffffff,
     alpha: 1,
     join: "round",
   });

@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { COLOR_INDICATOR_NEUTRAL } from "./settings.js";
-import { calc_gradiental_change } from "./common/common_utils.js";
+import { calc_gradiental_change_float } from "./common/common_utils.js";
 
 export default class Pointer {
   constructor(app) {
@@ -41,12 +41,12 @@ export default class Pointer {
       this.sprite.clear();
       return;
     }
-    const endX = calc_gradiental_change(
+    const endX = calc_gradiental_change_float(
       this.currentPosition.x,
       this.targetPosition.x,
       dt,
     );
-    const endY = calc_gradiental_change(
+    const endY = calc_gradiental_change_float(
       this.currentPosition.y,
       this.targetPosition.y,
       dt,

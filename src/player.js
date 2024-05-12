@@ -1,61 +1,21 @@
 // player.js
 
+import STRATEGY_NAMES from "./player/strategy_names_enum";
+import STRATEGY_FUNCTIONS from "./player/strategy_functions_enum";
+
 export default class Player {
-  constructor(name, color, app, isBot) {
+  constructor(name, color, app, botStrategy) {
     this.name = name;
     this.color = color;
     this.planets = [];
+    this.planets_connections_matrix = [];
     this._app = app;
-    this.isBot = isBot;
+    this.isBot = botStrategy != STRATEGY_NAMES.HUMAN;
+    this.botStrategy = botStrategy;
     this.timeSinceLastMove = 0;
   }
 
   makeMove(delta) {
-    if (!this.isBot) return;
-    this.timeSinceLastMove += delta;
-    if (this.isMoving(this.timeSinceLastMove * 2)) {
-      this.timeSinceLastMove = 0;
-      this.attackWeakestPlanet();
-    }
-  }
-
-  attackWeakestPlanet() {
-    for (let planet of this.planets) {
-      if (planet.owner == this) {
-        let weakestPlanet = null;
-        let weakestPopulation = Infinity;
-        for (let neighbor of planet.connected_planets) {
-          if (neighbor.owner == this) {
-            this.regroup(planet, neighbor);
-            continue;
-          }
-          if (neighbor.population < weakestPopulation) {
-            weakestPopulation = neighbor.population;
-            weakestPlanet = neighbor;
-          }
-        }
-        if (
-          weakestPlanet &&
-          weakestPlanet.population < planet.population - 5 &&
-          this.isMoving(0.8)
-        ) {
-          planet.start_sending_ships(weakestPlanet);
-        }
-      }
-    }
-  }
-
-  regroup(planetA, planetB) {
-    if (
-      this.isMoving(
-        (planetA.population / (planetA.population + planetB.population)) * 0.1,
-      )
-    ) {
-      planetA.start_sending_ships(planetB);
-    }
-  }
-
-  isMoving(probability) {
-    return Math.random() < probability;
+    STRATEGY_FUNCTIONS[this.botStrategy](this, delta);
   }
 }
