@@ -15,6 +15,7 @@ import {
 import {
   darkenColor,
   calc_gradiental_change_float,
+  calc_gradiental_change_color,
 } from "./common/common_utils";
 
 export default class Planet {
@@ -48,6 +49,7 @@ export default class Planet {
 
     this.target_alpha = 1.0;
     this.target_scale = 1.0;
+    this.target = { color: this.color, alpha: 1.0, scale: 1.0 };
 
     this.make_sprite();
     // dict of structure {planet_name: connection_object}
@@ -73,58 +75,35 @@ export default class Planet {
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
     this.sprite.hitArea = new PIXI.Circle(0, 0, 1.1 * this.r);
-    this.updateColor();
     this.createPopulationLabel();
-  }
 
-  updateColor() {
-    // these 2 lines are workaround for some random bug
-    // that makes the planet nonresponsive
-    this.sprite.alpha = 0.5;
-    this.sprite.alpha = 1;
-
+    const borderwidth = this.r / 4;
     this.sprite.texture = this.app.renderer.generateTexture(
       new PIXI.Graphics()
-        .circle(0, 0, this.r)
-        .fill(this.color)
+        .circle(0, 0, this.r - borderwidth)
+        .fill(0xffffff)
         .stroke({
-          width: 2,
-          color: darkenColor(this.color, 0.5),
-          alpha: 1,
-          join: "round",
+          width: borderwidth,
+          color: 0x555555,
         }),
     );
-
-    this.sprite.didChange = true;
   }
 
   highlightOn() {
-    this.target_alpha = 0.5;
-    this.target_scale = 1.2;
+    this.target.alpha = 0.5;
+    this.target.scale = 1.2;
   }
 
   highlightOff() {
-    this.target_alpha = 1;
-    this.target_scale = 1;
+    this.target.alpha = 1;
+    this.target.scale = 1;
   }
-
-  // planetHighlightOn(planet) {
-  //   // TODO might add some more gradient changes here
-  //   planet.sprite.alpha = 0.5;
-  //   planet.sprite.scale.set(1.2);
-  // }
-
-  // planetHighlightOff(planet) {
-  //   // TODO might add some more gradient changes here
-  //   planet.sprite.alpha = 1;
-  //   planet.sprite.scale.set(1);
-  // }
 
   planetTakeover(newColor, newStatus) {
     this.color = newColor;
+    this.target.color = newColor;
     this.status = newStatus;
     this.breed_rate = 1;
-    this.updateColor();
   }
 
   addConnection(connection) {
@@ -137,8 +116,8 @@ export default class Planet {
   createPopulationLabel() {
     const style = new PIXI.TextStyle({
       fontFamily: "Arial",
-      fontSize: 22,
-      fill: "white",
+      fontSize: this.r * 0.8,
+      fill: 0xffffff,
     });
     this.label = new PIXI.Text({ text: this.population, style });
     this.label.anchor.set(0.5);
@@ -200,15 +179,20 @@ export default class Planet {
     // i guess we re only updating the color and health of the planet
     this.sprite.alpha = calc_gradiental_change_float(
       this.sprite.alpha,
-      this.target_alpha,
+      this.target.alpha,
       delta,
     );
     this.sprite.scale.set(
       calc_gradiental_change_float(
         this.sprite.scale.x,
-        this.target_scale,
+        this.target.scale,
         delta,
       ),
+    );
+    this.sprite.tint = calc_gradiental_change_color(
+      this.sprite.tint,
+      this.target.color,
+      delta,
     );
   }
 
