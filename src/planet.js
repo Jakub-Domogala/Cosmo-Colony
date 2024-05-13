@@ -160,8 +160,8 @@ export default class Planet {
     return (
       delta *
       this.breed_rate *
-      this.r *
-      0.005 *
+      Math.sqrt(this.r / this.this_system.r) *
+      0.05 *
       (Math.log2(this.population + 1) + 1) *
       (1 + (Math.random() - 0.5) * PLANET_RANDOM_BREEDING_INFLUENCE)
     );
