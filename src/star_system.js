@@ -1,8 +1,14 @@
 // star_system.js
 
-import { findMinMaxR, createMap } from "./star_system/star_system_creator.js";
+import { createMap } from "./star_system/star_system_creator.js";
 import { distance } from "./common/common_utils.js";
-import { COLOR_INDICATOR_SUCCESS, COLOR_INDICATOR_FAIL } from "./settings.js";
+import {
+  COLOR_INDICATOR_SUCCESS,
+  COLOR_INDICATOR_FAIL,
+  GAME_STATUS_GOING,
+  GAME_STATUS_WON,
+  GAME_STATUS_LOST,
+} from "./settings.js";
 import Pointer from "./pointer.js";
 import STATUS from "./planet/planet_status_enum.js";
 
@@ -12,6 +18,7 @@ export default class StarSystem {
     this.app = app;
     this.planets_dict = {};
     this.players = players;
+    this.isAllBots = players.every((player) => player.isBot);
     this.connections = [];
     this.draggedPlanet = null;
     this.targetPlanet = null;
@@ -26,7 +33,6 @@ export default class StarSystem {
   }
 
   onPlanetDrag(planet) {
-    console.log(planet.status);
     if (planet.status == STATUS.NEUTRAL || planet.owner.isBot) {
       console.log("You can only drag your planets!");
       return;
@@ -107,18 +113,6 @@ export default class StarSystem {
     }
   }
 
-  // planetHighlightOn(planet) {
-  //   // TODO might add some more gradient changes here
-  //   planet.sprite.alpha = 0.5;
-  //   planet.sprite.scale.set(1.2);
-  // }
-
-  // planetHighlightOff(planet) {
-  //   // TODO might add some more gradient changes here
-  //   planet.sprite.alpha = 1;
-  //   planet.sprite.scale.set(1);
-  // }
-
   update(delta) {
     this.lastDT = delta;
     for (let connection of this.connections) connection.update(delta);
@@ -128,5 +122,23 @@ export default class StarSystem {
     for (let i = 0; i < this.players.length; i++)
       this.players[i].makeMove(delta);
     this.newptr.update(delta);
+
+    return this.check_game_status();
+  }
+
+  check_game_status() {
+    let inGamePlayers = [];
+    for (let planet in this.planets_dict) {
+      const p = this.planets_dict[planet];
+      if (p.owner !== null) inGamePlayers.push(p.owner);
+    }
+    inGamePlayers = [...new Set(inGamePlayers)];
+    if (inGamePlayers.length == 1 && !this.isAllBots) {
+      if (!inGamePlayers[0].isBot) return GAME_STATUS_WON;
+    }
+    if (inGamePlayers.every((player) => player.isBot) && !this.isAllBots) {
+      return GAME_STATUS_LOST;
+    }
+    return GAME_STATUS_GOING;
   }
 }

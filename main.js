@@ -1,5 +1,11 @@
+import { calc_gradiental_change_float } from "./src/common/common_utils.js";
 import { getApp, getPlayers, getStarSystem } from "./src/init_utils.js";
-import { GAME_TEMPO } from "./src/settings.js";
+import {
+  GAME_STATUS_GOING,
+  GAME_STATUS_LOST,
+  GAME_STATUS_WON,
+  GAME_TEMPO,
+} from "./src/settings.js";
 
 // Function to hide the entry screen and start the game
 function startGame() {
@@ -23,10 +29,31 @@ function startGame() {
     );
 
     // RUN GAME LOOP
+    let speedup = 1;
+    let targetSpeedup = 1;
     let elapsed = 0.0;
+    let epsilon = 0.01;
     app.ticker.add((ticker) => {
       elapsed += ticker.deltaTime;
-      starSystem.update((ticker.deltaMS / 1000) * GAME_TEMPO);
+      const dt = ticker.deltaMS / 1000;
+      speedup = calc_gradiental_change_float(speedup, targetSpeedup, dt, 2);
+      const gameStatus = starSystem.update(dt * GAME_TEMPO * speedup);
+      if (gameStatus === GAME_STATUS_WON) {
+        targetSpeedup = 0;
+        console.log("You won!");
+      }
+      if (gameStatus === GAME_STATUS_LOST) {
+        // targetSpeedup = 0;
+        targetSpeedup = 0;
+        console.log("You lost!");
+      }
+      if (gameStatus === GAME_STATUS_GOING) {
+        return;
+      }
+      if (speedup < epsilon) {
+        console.log("Game over!");
+        app.ticker.stop();
+      }
     });
   })();
 }

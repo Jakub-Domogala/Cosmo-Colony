@@ -27,7 +27,7 @@ body {
 
 h1 {
     color: #00aaff; /* Blue color for the heading */
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 label {
@@ -40,7 +40,7 @@ button {
     padding: 10px;
     margin: 5px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     background-color: #37474f; /* Dark blue background color for input fields and buttons */
     color: #ffffff; /* White text color for input fields and buttons */
 }

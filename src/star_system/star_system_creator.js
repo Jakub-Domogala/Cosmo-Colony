@@ -18,11 +18,9 @@ export function findMinMaxR(starSystem, planets) {
   for (let i = 0; i < planets.length; i++) {
     let planet = planets[i];
 
-    console.log(planet.radius);
     starSystem.r = Math.min(starSystem.r, planet.radius);
     starSystem.R = Math.max(starSystem.R, planet.radius);
   }
-  console.log(starSystem.r, starSystem.R);
 }
 
 function createConnections(starSystem, connections) {

@@ -169,7 +169,6 @@ export default class Planet {
 
   update(delta) {
     this.breeding_time += this.calculateBreedindDelta(delta);
-    // if (this.name == "Mars") console.log("Mars time: ", this.breeding_time);
     while (this.breeding_time >= 1) {
       this.breeding_time -= 1;
       this.population += 1;

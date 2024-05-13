@@ -17,7 +17,7 @@ const COLOR_CONNECTION_HIGHLIGHT_MY = 0xffffff;
 const COLORS_PLAYERS = [0xe65100, 0xdfdf00, 0x00e626, 0xe002ca, 0x02cde0];
 // SYSTEM CREATION
 const CONNECT_ALL_PLANETS = false;
-const INPUT_SYSTEM_JSON = "sys1.json";
+const INPUT_SYSTEM_JSON = "gen_sys0003.json";
 
 const PLAYERS_AMOUNT = 3;
 const BOTS_ONLY = false;
@@ -35,6 +35,16 @@ const PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE = 0.1;
 
 const SHIP_INIT_SPEED = 140;
 const SHIP_ACC = 100;
+
+// GAME STATUS
+const GAME_STATUS_WON = 1;
+const GAME_STATUS_LOST = -1;
+const GAME_STATUS_GOING = 0;
+
+// MESSAGES
+const GAME_MSG_WON = "You won!";
+const GAME_MSG_LOST = "You lost!";
+const GAME_MSG_GOING = "Game is going on...";
 
 export {
   GAME_TEMPO,
@@ -59,4 +69,10 @@ export {
   PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE,
   SHIP_INIT_SPEED,
   SHIP_ACC,
+  GAME_STATUS_WON,
+  GAME_STATUS_LOST,
+  GAME_STATUS_GOING,
+  GAME_MSG_WON,
+  GAME_MSG_LOST,
+  GAME_MSG_GOING,
 };
