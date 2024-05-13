@@ -1,7 +1,9 @@
 // settings.js contains all the settings for the game.
 
+import STRATEGY_NAMES from "./player/strategy_names_enum";
+
 // GAME TEMPO
-const GAME_TEMPO = 2;
+const GAME_TEMPO = 1;
 
 // COLORS
 const COLOR_INDICATOR_SUCCESS = 0x00ff00;
@@ -16,7 +18,7 @@ const COLOR_CONNECTION_HIGHLIGHT_MY = 0xffffff;
 
 const COLORS_PLAYERS = [
   0xe65100, 0xdfdf00, 0x00e626, 0xe002ca, 0x02cde0, 0xfecca2, 0x416637,
-  0x3e1d47,
+  0x3e1d47, 0x8000ff, 0x0033ff,
 ];
 // SYSTEM CREATION
 const CONNECT_ALL_PLANETS = false;
@@ -24,6 +26,7 @@ const INPUT_SYSTEM_JSON = "gen_sys0004.json";
 
 const PLAYERS_AMOUNT = 8;
 const BOTS_ONLY = true;
+const BOTS_STRATEGIES_POOL = [STRATEGY_NAMES.ALLIN];
 
 // GAME MECHANICS
 const PLANET_RANDOM_BREEDING_INFLUENCE = 0.5;
@@ -64,6 +67,7 @@ export {
   INPUT_SYSTEM_JSON,
   PLAYERS_AMOUNT,
   BOTS_ONLY,
+  BOTS_STRATEGIES_POOL,
   PLANET_RANDOM_BREEDING_INFLUENCE,
   PLANET_OCCUPIED_BREEDRATE,
   PLANET_NEUTRAL_BREEDRATE,

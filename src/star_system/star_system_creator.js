@@ -3,6 +3,7 @@
 import Planet from "./../planet";
 import Connection from "./../connection";
 import { CONNECT_ALL_PLANETS } from "../settings";
+import { v8_0_0 } from "pixi.js";
 
 export function createMap(starSystem) {
   let data = starSystem.data;
@@ -29,10 +30,10 @@ function createConnections(starSystem, connections) {
 
     // iterate over all planets values
 
-    for (let planetAName in starSystem.planets_dict) {
-      for (let planetBName in starSystem.planets_dict) {
-        let planetA = starSystem.planets_dict[planetAName];
-        let planetB = starSystem.planets_dict[planetBName];
+    for (let planetAName in starSystem.planets_name2obj) {
+      for (let planetBName in starSystem.planets_name2obj) {
+        let planetA = starSystem.planets_name2obj[planetAName];
+        let planetB = starSystem.planets_name2obj[planetBName];
         if (planetA != planetB) {
           let new_connection = new Connection(
             planetA,
@@ -49,8 +50,8 @@ function createConnections(starSystem, connections) {
     }
   } else {
     for (let i = 0; i < connections.length; i++) {
-      let planetA = starSystem.planets_dict[connections[i].A];
-      let planetB = starSystem.planets_dict[connections[i].B];
+      let planetA = starSystem.planets_name2obj[connections[i].A];
+      let planetB = starSystem.planets_name2obj[connections[i].B];
       const new_connection = new Connection(
         planetA,
         planetB,
@@ -95,16 +96,42 @@ function createPlanets(starSystem, planets) {
       player_assign,
       starSystem,
     );
-    starSystem.planets_dict[new_planet.name] = new_planet;
+    starSystem.planets_name2obj[new_planet.name] = new_planet;
   }
 }
 
 function addPlanetsAndConnectionsToStage(starSystem) {
   const planets_list = [];
-  for (let planet_name in starSystem.planets_dict) {
-    let planet = starSystem.planets_dict[planet_name];
+  for (let planet_name in starSystem.planets_name2obj) {
+    let planet = starSystem.planets_name2obj[planet_name];
     planets_list.push(planet);
   }
+  starSystem.planets_list = planets_list;
+  console.log(planets_list);
+  // declare matrix
+  for (let i = 0; i < planets_list.length; i++) {
+    starSystem.connections_matrix.push([]);
+    starSystem.planets_name2idx[planets_list[i].name] = i;
+    for (let j = 0; j < planets_list.length; j++) {
+      starSystem.connections_matrix[i].push(false);
+    }
+  }
+  // fill matrix
+  for (let i = 0; i < starSystem.connections.length; i++) {
+    let planetA = starSystem.connections[i].planetA;
+    let planetB = starSystem.connections[i].planetB;
+    let idxA = starSystem.planets_name2idx[planetA.name];
+    let idxB = starSystem.planets_name2idx[planetB.name];
+    starSystem.connections_matrix[idxA][idxB] = true;
+    starSystem.connections_matrix[idxB][idxA] = true;
+  }
+  // TODO: fill matrix
+  console.log("matrix", starSystem.connections_matrix);
+  console.log("list", starSystem.planets_list);
+  console.log("name2idx", starSystem.planets_name2idx);
+  console.log("name2obj", starSystem.planets_name2obj);
+  // print size of matrix
+  console.log(Object.keys(starSystem.connections_matrix).length);
   starSystem.players.forEach((player) => {
     player.planets = planets_list;
   });
@@ -112,7 +139,7 @@ function addPlanetsAndConnectionsToStage(starSystem) {
   starSystem.connections.forEach((connection) =>
     starSystem.app.stage.addChild(connection.sprite),
   );
-  Object.values(starSystem.planets_dict).forEach((planet) => {
+  Object.values(starSystem.planets_name2obj).forEach((planet) => {
     starSystem.app.stage.addChild(planet.sprite);
     starSystem.app.stage.addChild(planet.label);
   });

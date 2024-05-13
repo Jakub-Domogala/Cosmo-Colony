@@ -3,6 +3,7 @@ import StarSystem from "./star_system.js";
 import Player from "./player.js";
 import {
   BOTS_ONLY,
+  BOTS_STRATEGIES_POOL,
   COLORS_PLAYERS,
   INPUT_SYSTEM_JSON,
   PLAYERS_AMOUNT,
@@ -27,7 +28,9 @@ export function getPlayers(app) {
         `player${i}`,
         COLORS_PLAYERS[i],
         app,
-        i > 0 || BOTS_ONLY ? STRATEGY_NAMES.PRIMITIVE : STRATEGY_NAMES.HUMAN,
+        i > 0 || BOTS_ONLY
+          ? get_random_elem_from_list_or_dict(BOTS_STRATEGIES_POOL)
+          : STRATEGY_NAMES.HUMAN,
       ),
     );
   return players;
@@ -49,5 +52,26 @@ export async function getStarSystem(app, players) {
     // Handle any errors that occur during the fetch
     console.error("Error fetching JSON:", error);
     throw error; // Re-throwing the error for error handling outside this function
+  }
+}
+
+function get_random_elem_from_list_or_dict(data) {
+  let dict;
+  if (Array.isArray(data)) {
+    dict = {};
+    data.forEach((item) => (dict[item] = 1));
+  } else {
+    dict = data;
+  }
+  const totalProbability = Object.values(dict).reduce(
+    (acc, prob) => acc + prob,
+    0,
+  );
+  let randomNum = Math.random() * totalProbability;
+  for (const key in dict) {
+    randomNum -= dict[key];
+    if (randomNum <= 0) {
+      return key;
+    }
   }
 }

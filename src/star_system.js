@@ -17,7 +17,10 @@ export default class StarSystem {
   constructor(data, app, players) {
     this.data = data;
     this.app = app;
-    this.planets_dict = {};
+    this.planets_name2obj = {};
+    this.planets_name2idx = {};
+    this.planets_list = [];
+    this.connections_matrix = [];
     this.players = players;
     this.isAllBots = players.every((player) => player.isBot);
     this.connections = [];
@@ -68,8 +71,8 @@ export default class StarSystem {
   }
 
   findIfPlanetCollision(position) {
-    for (let planet in this.planets_dict) {
-      const p_obj = this.planets_dict[planet];
+    for (let planet in this.planets_name2obj) {
+      const p_obj = this.planets_name2obj[planet];
       if (distance(p_obj.sprite.position, position) < p_obj.r + 2) return p_obj;
     }
     return null;
@@ -117,7 +120,7 @@ export default class StarSystem {
   update(delta) {
     this.lastDT = delta;
     for (let connection of this.connections) connection.update(delta);
-    Object.values(this.planets_dict).forEach((planet) => {
+    Object.values(this.planets_name2obj).forEach((planet) => {
       planet.update(delta);
     });
     for (let i = 0; i < this.players.length; i++)
@@ -129,8 +132,8 @@ export default class StarSystem {
 
   check_game_status() {
     let inGamePlayers = [];
-    for (let planet in this.planets_dict) {
-      const p = this.planets_dict[planet];
+    for (let planet in this.planets_name2obj) {
+      const p = this.planets_name2obj[planet];
       if (p.owner !== null) inGamePlayers.push(p.owner);
     }
     inGamePlayers = [...new Set(inGamePlayers)];
@@ -147,5 +150,25 @@ export default class StarSystem {
       }
       return GAME_STATUS_GOING;
     }
+  }
+
+  get_planet_by_name(name) {
+    return this.planets_name2obj[name];
+  }
+
+  get_planet_idx_by_name(name) {
+    return this.planets_name2idx[name];
+  }
+
+  get_planet_idx_by_obj(planet) {
+    return this.planets_name2idx[planet.name];
+  }
+
+  get_planet_obj_by_idx(idx) {
+    return this.planets_list[idx];
+  }
+
+  get_planets_length() {
+    return this.planets_list.length;
   }
 }

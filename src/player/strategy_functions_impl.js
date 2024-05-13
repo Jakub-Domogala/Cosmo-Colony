@@ -49,6 +49,27 @@ export function makeMovePrimitive(player, delta) {
 
 export function makeMoveAllIn(player, delta) {}
 
+function dfs_find_my_connected_planets(player, planet, visited, star_system) {
+  const M = star_system.connections_matrix;
+  let planetIdx = star_system.get_planet_idx_by_obj(planet);
+  visited[planet.id] = true;
+  for (let i = 0; i < M[planetIdx].length; i++) {
+    if (
+      i != planetIdx &&
+      M[planetIdx][i] &&
+      !visited[i] &&
+      star_system.planets[i].owner == player
+    ) {
+      dfs_find_my_connected_planets(
+        player,
+        star_system.planets[i],
+        visited,
+        star_system,
+      );
+    }
+  }
+}
+
 function boolByProbability(probability) {
   return Math.random() < probability;
 }
