@@ -8,6 +8,7 @@ import {
   GAME_STATUS_GOING,
   GAME_STATUS_WON,
   GAME_STATUS_LOST,
+  GAME_STATUS_LAST_BOT_STANDING,
 } from "./settings.js";
 import Pointer from "./pointer.js";
 import STATUS from "./planet/planet_status_enum.js";
@@ -133,12 +134,18 @@ export default class StarSystem {
       if (p.owner !== null) inGamePlayers.push(p.owner);
     }
     inGamePlayers = [...new Set(inGamePlayers)];
-    if (inGamePlayers.length == 1 && !this.isAllBots) {
-      if (!inGamePlayers[0].isBot) return GAME_STATUS_WON;
+    if (this.isAllBots) {
+      if (inGamePlayers.length == 1) return GAME_STATUS_LAST_BOT_STANDING;
+      return GAME_STATUS_GOING;
+    } else {
+      if (inGamePlayers.length == 1) {
+        if (!inGamePlayers[0].isBot) return GAME_STATUS_WON;
+        return GAME_STATUS_LAST_BOT_STANDING;
+      }
+      if (inGamePlayers.every((player) => player.isBot) && !this.isAllBots) {
+        return GAME_STATUS_LOST;
+      }
+      return GAME_STATUS_GOING;
     }
-    if (inGamePlayers.every((player) => player.isBot) && !this.isAllBots) {
-      return GAME_STATUS_LOST;
-    }
-    return GAME_STATUS_GOING;
   }
 }

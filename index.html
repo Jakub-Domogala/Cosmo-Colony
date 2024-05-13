@@ -7,7 +7,7 @@
         <title>Cosmo Colony</title>
     </head>
     <body>
-        <div id="entryScreen">
+        <div id="entryScreen" class="entry">
             <h1>Cosmo Colony!</h1>
             <label for="playerName">Player Name:</label>
             <input type="text" id="playerName" value="Player 1" /><br /><br />
@@ -24,6 +24,12 @@
         <div id="gameContainer" style="display: none">
             <!-- Your game content goes here -->
         </div>
+        <div id="gameOverScreen" class="end">
+            <h1>Game Over!</h1>
+            <button id="restartButton">Start Game</button>
+            <!-- Add any additional content for the game over screen here -->
+        </div>
+
         <script type="module" src="main.js"></script>
     </body>
 </html>

@@ -12,6 +12,7 @@ import STRATEGY_NAMES from "./player/strategy_names_enum.js";
 export async function getApp() {
   const app = new Application();
   await app.init({ background: "#061536", resizeTo: window });
+  app.canvas.classList.add("game-canvas");
   document.body.appendChild(app.canvas);
   app.stage.eventMode = "static";
   app.stage.hitArea = app.screen;
