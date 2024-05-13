@@ -67,7 +67,7 @@ function startGame() {
         targetSpeedup = 0;
         console.log("Last bot standing!");
       }
-      if (speedup < 0.5 && !endGame) {
+      if (speedup < 0.8 && !endGame) {
         showGameOverScreen();
         endGame = true;
       }
