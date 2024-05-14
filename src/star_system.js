@@ -124,7 +124,7 @@ export default class StarSystem {
       planet.update(delta);
     });
     for (let i = 0; i < this.players.length; i++)
-      this.players[i].makeMove(delta);
+      this.players[i].makeMove(delta, this);
     this.newptr.update(delta);
 
     return this.check_game_status();

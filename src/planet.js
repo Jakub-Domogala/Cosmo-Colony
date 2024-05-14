@@ -76,6 +76,7 @@ export default class Planet {
     this.sprite.scale.set(1);
     this.sprite.hitArea = new PIXI.Circle(0, 0, 1.1 * this.r);
     this.createPopulationLabel();
+    this.addDebugLabel();
 
     const borderwidth = this.r / 4;
     this.sprite.texture = this.app.renderer.generateTexture(
@@ -125,6 +126,26 @@ export default class Planet {
     this.label.y = this.y;
     this.label.hitArea = new PIXI.Circle(0, 0, 0);
     this.label.eventMode = "dynamic";
+  }
+
+  addDebugLabel(offX = 40, offY = 40) {
+    const style = new PIXI.TextStyle({
+      fontFamily: "Arial",
+      fontSize: 20,
+      fill: 0xffffff,
+    });
+    this.debug_label = new PIXI.Text({ text: "N/A", style });
+    this.debug_label.anchor.set(0.5);
+    this.debug_label.x = this.x + offX;
+    this.debug_label.y = this.y + offY;
+    this.debug_label.hitArea = new PIXI.Circle(0, 0, 0);
+    this.debug_label.eventMode = "dynamic";
+    this.app.stage.addChild(this.debug_label);
+  }
+
+  updateDebugLabel(value) {
+    this.debug_label.text = value;
+    this.debug_label._didTextUpdate = true;
   }
 
   start_sending_ships(destination_planet) {

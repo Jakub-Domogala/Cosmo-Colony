@@ -1,5 +1,4 @@
 // star_system_creator.js
-
 import Planet from "./../planet";
 import Connection from "./../connection";
 import { CONNECT_ALL_PLANETS } from "../settings";
@@ -126,12 +125,12 @@ function addPlanetsAndConnectionsToStage(starSystem) {
     starSystem.connections_matrix[idxB][idxA] = true;
   }
   // TODO: fill matrix
-  console.log("matrix", starSystem.connections_matrix);
-  console.log("list", starSystem.planets_list);
-  console.log("name2idx", starSystem.planets_name2idx);
-  console.log("name2obj", starSystem.planets_name2obj);
+  // console.log("matrix", starSystem.connections_matrix);
+  // console.log("list", starSystem.planets_list);
+  // console.log("name2idx", starSystem.planets_name2idx);
+  // console.log("name2obj", starSystem.planets_name2obj);
   // print size of matrix
-  console.log(Object.keys(starSystem.connections_matrix).length);
+  // console.log(Object.keys(starSystem.connections_matrix).length);
   starSystem.players.forEach((player) => {
     player.planets = planets_list;
   });

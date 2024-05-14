@@ -21,14 +21,14 @@ function startGame() {
   }
   const overScreen = document.getElementById("gameOverScreen");
   if (overScreen) {
-    console.log("remove end screen");
+    // console.log("remove end screen");
     overScreen.style.display = "none";
   }
   const playerName = document.getElementById("playerName").value;
   const gameDifficulty = parseInt(
     document.getElementById("gameDifficulty").value,
   );
-  console.log(playerName, gameDifficulty);
+  // console.log(playerName, gameDifficulty);
 
   document.getElementById("entryScreen").style.display = "none";
   document.getElementById("gameContainer").style.display = "flex";
@@ -50,6 +50,7 @@ function startGame() {
     let elapsed = 0.0;
     let epsilon = 0.001;
     let endGame = false;
+    // app.ticker.maxFPS = 1;
     app.ticker.add((ticker) => {
       elapsed += ticker.deltaTime;
       const dt = ticker.deltaMS / 1000;

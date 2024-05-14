@@ -15,7 +15,7 @@ export default class Player {
     this.timeSinceLastMove = 0;
   }
 
-  makeMove(delta) {
-    STRATEGY_FUNCTIONS[this.botStrategy](this, delta);
+  makeMove(delta, starSystem) {
+    STRATEGY_FUNCTIONS[this.botStrategy](this, delta, starSystem);
   }
 }

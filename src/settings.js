@@ -22,10 +22,10 @@ const COLORS_PLAYERS = [
 ];
 // SYSTEM CREATION
 const CONNECT_ALL_PLANETS = false;
-const INPUT_SYSTEM_JSON = "gen_sys0004.json";
+const INPUT_SYSTEM_JSON = "gen_sys0005.json";
 
-const PLAYERS_AMOUNT = 8;
-const BOTS_ONLY = true;
+const PLAYERS_AMOUNT = 2;
+const BOTS_ONLY = false;
 const BOTS_STRATEGIES_POOL = [STRATEGY_NAMES.ALLIN];
 
 // GAME MECHANICS
