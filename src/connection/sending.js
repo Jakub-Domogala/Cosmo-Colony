@@ -18,7 +18,7 @@ export default class Sending {
     this.owner = this.origin_planet.owner;
     this.ships_color = this.origin_planet.color;
     this.sending_speed = this.origin_planet.attack_speed;
-    this.sending_time = 1;
+    // this.sending_time = 1;
   }
 
   stop_sending_ships() {
@@ -34,14 +34,16 @@ export default class Sending {
     this.sending_time += delta * this.sending_speed;
     this.move_ships(delta);
     // add new ships
-    if (this.sending_time >= 1 && this.owner !== null) {
+    if (this.sending_time >= 1) {
       this.sending_time -= 1;
-      if (this.origin_planet.population <= 2) {
-        this.stop_sending_ships();
-        return;
+      if (this.owner !== null) {
+        if (this.origin_planet.population <= 2) {
+          this.stop_sending_ships();
+          return;
+        }
+        this.add_ship();
+        this.origin_planet.shipSent();
       }
-      this.add_ship();
-      this.origin_planet.shipSent();
     }
     // coliding with planets handled in spaceship.js
     // coliding with other ships handled in connection.js
@@ -63,12 +65,7 @@ export default class Sending {
 
   add_ship() {
     if (this.owner === null) return;
-    let ship = new Spaceship(
-      this.owner,
-      this.origin_planet,
-      this.destination_planet,
-      this._app,
-    );
+    let ship = new Spaceship(this.owner, this.origin_planet, this.destination_planet, this._app);
     this.ships_queue.push(ship);
     this._app.stage.addChild(ship.sprite);
   }

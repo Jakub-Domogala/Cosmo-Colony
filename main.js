@@ -1,12 +1,6 @@
 import { calc_gradiental_change_float } from "./src/common/common_utils.js";
 import { getApp, getPlayers, getStarSystem } from "./src/init_utils.js";
-import {
-  GAME_STATUS_GOING,
-  GAME_STATUS_LAST_BOT_STANDING,
-  GAME_STATUS_LOST,
-  GAME_STATUS_WON,
-  GAME_TEMPO,
-} from "./src/settings.js";
+import { GAME_STATUS_GOING, GAME_STATUS_LAST_BOT_STANDING, GAME_STATUS_LOST, GAME_STATUS_WON, GAME_TEMPO } from "./src/settings.js";
 
 function showGameOverScreen() {
   document.getElementById("gameContainer").style.display = "none";
@@ -25,9 +19,7 @@ function startGame() {
     overScreen.style.display = "none";
   }
   const playerName = document.getElementById("playerName").value;
-  const gameDifficulty = parseInt(
-    document.getElementById("gameDifficulty").value,
-  );
+  const gameDifficulty = parseInt(document.getElementById("gameDifficulty").value);
   // console.log(playerName, gameDifficulty);
 
   document.getElementById("entryScreen").style.display = "none";

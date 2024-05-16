@@ -1,13 +1,7 @@
 import { Application } from "pixi.js";
 import StarSystem from "./star_system.js";
 import Player from "./player.js";
-import {
-  BOTS_ONLY,
-  BOTS_STRATEGIES_POOL,
-  COLORS_PLAYERS,
-  INPUT_SYSTEM_JSON,
-  PLAYERS_AMOUNT,
-} from "./settings.js";
+import { BOTS_ONLY, BOTS_STRATEGIES_POOL, COLORS_PLAYERS, INPUT_SYSTEM_JSON, PLAYERS_AMOUNT } from "./settings.js";
 import STRATEGY_NAMES from "./player/strategy_names_enum.js";
 
 export async function getApp() {
@@ -28,9 +22,7 @@ export function getPlayers(app) {
         `player${i}`,
         COLORS_PLAYERS[i],
         app,
-        i > 0 || BOTS_ONLY
-          ? get_random_elem_from_list_or_dict(BOTS_STRATEGIES_POOL)
-          : STRATEGY_NAMES.HUMAN,
+        i > 0 || BOTS_ONLY ? get_random_elem_from_list_or_dict(BOTS_STRATEGIES_POOL) : STRATEGY_NAMES.HUMAN,
       ),
     );
   return players;
@@ -38,9 +30,7 @@ export function getPlayers(app) {
 
 export async function getStarSystem(app, players) {
   try {
-    const response = await fetch(
-      `./resource/solar_systems/${INPUT_SYSTEM_JSON}`,
-    );
+    const response = await fetch(`./resource/solar_systems/${INPUT_SYSTEM_JSON}`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -55,7 +45,7 @@ export async function getStarSystem(app, players) {
   }
 }
 
-function get_random_elem_from_list_or_dict(data) {
+export function get_random_elem_from_list_or_dict(data) {
   let dict;
   if (Array.isArray(data)) {
     dict = {};
@@ -63,10 +53,7 @@ function get_random_elem_from_list_or_dict(data) {
   } else {
     dict = data;
   }
-  const totalProbability = Object.values(dict).reduce(
-    (acc, prob) => acc + prob,
-    0,
-  );
+  const totalProbability = Object.values(dict).reduce((acc, prob) => acc + prob, 0);
   let randomNum = Math.random() * totalProbability;
   for (const key in dict) {
     randomNum -= dict[key];

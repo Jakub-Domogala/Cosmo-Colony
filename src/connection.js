@@ -3,20 +3,9 @@
 import * as PIXI from "pixi.js";
 import Sending from "./connection/sending.js";
 import { distance } from "./common/common_utils.js";
-import {
-  COLOR_CONNECTION,
-  COLOR_CONNECTION_HIGHLIGHT,
-  COLOR_CONNECTION_HIGHLIGHT_MY,
-} from "./settings.js";
-import {
-  calc_gradiental_change_float,
-  calc_gradiental_change_color,
-} from "./common/common_utils.js";
-import {
-  get_line_shape,
-  get_hit_area,
-  get_hover_line_shape,
-} from "./connection/connection_utils.js";
+import { COLOR_CONNECTION, COLOR_CONNECTION_HIGHLIGHT, COLOR_CONNECTION_HIGHLIGHT_MY } from "./settings.js";
+import { calc_gradiental_change_float, calc_gradiental_change_color } from "./common/common_utils.js";
+import { get_line_shape, get_hit_area, get_hover_line_shape } from "./connection/connection_utils.js";
 
 export default class Connection {
   constructor(planetA, planetB, app, starSystem) {
@@ -52,9 +41,7 @@ export default class Connection {
     this.sprite.y = (this.cordinates[0][1] + this.cordinates[1][1]) / 2;
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
-    this.sprite.texture = this.app.renderer.generateTexture(
-      get_line_shape(this),
-    );
+    this.sprite.texture = this.app.renderer.generateTexture(get_line_shape(this));
 
     const x1 = this.planetA.x;
     const y1 = this.planetA.y;
@@ -71,17 +58,24 @@ export default class Connection {
   }
 
   start_sending_ships(origin_planet) {
-    if (origin_planet != this.planetA && origin_planet != this.planetB)
-      return null;
+    if (origin_planet != this.planetA && origin_planet != this.planetB) return null;
     if (origin_planet == this.planetA) {
-      if (this.sendingB2A.owner == origin_planet.owner)
-        this.sendingB2A.stop_sending_ships();
+      if (this.sendingB2A.owner == origin_planet.owner) this.sendingB2A.stop_sending_ships();
       this.sendingA2B.start_sending_ships();
     }
     if (origin_planet == this.planetB) {
-      if (this.sendingA2B.owner == origin_planet.owner)
-        this.sendingA2B.stop_sending_ships();
+      if (this.sendingA2B.owner == origin_planet.owner) this.sendingA2B.stop_sending_ships();
       this.sendingB2A.start_sending_ships();
+    }
+  }
+
+  stop_sending_ships(origin_planet) {
+    if (origin_planet != this.planetA && origin_planet != this.planetB) return null;
+    if (origin_planet == this.planetA) {
+      this.sendingA2B.stop_sending_ships();
+    }
+    if (origin_planet == this.planetB) {
+      this.sendingB2A.stop_sending_ships();
     }
   }
 
@@ -89,24 +83,9 @@ export default class Connection {
     this.check_2_ship_collision();
     this.sendingA2B.update(delta);
     this.sendingB2A.update(delta);
-    this.sprite.scale.x = calc_gradiental_change_float(
-      this.sprite.scale.x,
-      this.target.scale,
-      delta,
-      10,
-    );
-    this.sprite.alpha = calc_gradiental_change_float(
-      this.sprite.alpha,
-      this.target.alpha,
-      delta,
-      10,
-    );
-    this.sprite.tint = calc_gradiental_change_color(
-      this.sprite.tint,
-      this.target.tint,
-      delta,
-      2,
-    );
+    this.sprite.scale.x = calc_gradiental_change_float(this.sprite.scale.x, this.target.scale, delta, 10);
+    this.sprite.alpha = calc_gradiental_change_float(this.sprite.alpha, this.target.alpha, delta, 10);
+    this.sprite.tint = calc_gradiental_change_color(this.sprite.tint, this.target.tint, delta, 2);
   }
 
   check_2_ship_collision() {
@@ -121,29 +100,16 @@ export default class Connection {
   }
 
   isAMyPlanetThatIsSending() {
-    return (
-      this.planetA.owner &&
-      !this.planetA.owner.isBot &&
-      this.sendingA2B.isSending()
-    );
+    return this.planetA.owner && !this.planetA.owner.isBot && this.sendingA2B.isSending();
   }
 
   isBMyPlanetThatIsSending() {
-    return (
-      this.planetB.owner &&
-      !this.planetB.owner.isBot &&
-      this.sendingB2A.isSending()
-    );
+    return this.planetB.owner && !this.planetB.owner.isBot && this.sendingB2A.isSending();
   }
 
   pointerOver() {
-    if (
-      this.starSystem.draggedPlanet == null &&
-      (this.isAMyPlanetThatIsSending() || this.isBMyPlanetThatIsSending())
-    ) {
-      this.sprite.texture = this.app.renderer.generateTexture(
-        get_hover_line_shape(this),
-      );
+    if (this.starSystem.draggedPlanet == null && (this.isAMyPlanetThatIsSending() || this.isBMyPlanetThatIsSending())) {
+      this.sprite.texture = this.app.renderer.generateTexture(get_hover_line_shape(this));
       this.target.tint = COLOR_CONNECTION_HIGHLIGHT_MY;
     } else {
       // this.sprite.scale.y = 1.5;
@@ -154,9 +120,7 @@ export default class Connection {
   }
 
   pointerOut() {
-    this.sprite.texture = this.app.renderer.generateTexture(
-      get_line_shape(this),
-    );
+    this.sprite.texture = this.app.renderer.generateTexture(get_line_shape(this));
     this.target.alpha = 0.5;
     this.target.scale = 1;
     this.target.tint = COLOR_CONNECTION;

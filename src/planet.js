@@ -12,27 +12,15 @@ import {
   PLANET_OCCUPIED_BREEDRATE,
   PLANET_RANDOM_BREEDING_INFLUENCE,
 } from "./settings";
-import {
-  darkenColor,
-  calc_gradiental_change_float,
-  calc_gradiental_change_color,
-} from "./common/common_utils";
+import { darkenColor, calc_gradiental_change_float, calc_gradiental_change_color } from "./common/common_utils";
 
 export default class Planet {
   constructor(name, x, y, r, color, player, system) {
     // this.attack_speed = 6;
-    this.attack_speed =
-      PLANET_ATTACK_SPEED *
-      (1 + (r / system.r - 1) * PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE);
-    this.breed_rate = player
-      ? PLANET_OCCUPIED_BREEDRATE
-      : PLANET_NEUTRAL_BREEDRATE;
+    this.attack_speed = PLANET_ATTACK_SPEED * (1 + (r / system.r - 1) * PLANET_ATTACK_SPEED_BY_RADIUS_INFLUENCE);
+    this.breed_rate = player ? PLANET_OCCUPIED_BREEDRATE : PLANET_NEUTRAL_BREEDRATE;
     this.population = Math.ceil(
-      player
-        ? PLANET_INIT_POPULATION
-        : PLANET_INIT_POPULATION *
-            (r / system.r) *
-            PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER,
+      player ? PLANET_INIT_POPULATION : PLANET_INIT_POPULATION * (r / system.r) * PLANET_NEUTRAL_INIT_POPULATION_MULTIPLIER,
     );
 
     this.breeding_time = 0.0;
@@ -76,7 +64,7 @@ export default class Planet {
     this.sprite.scale.set(1);
     this.sprite.hitArea = new PIXI.Circle(0, 0, 1.1 * this.r);
     this.createPopulationLabel();
-    this.addDebugLabel();
+    this.addDebugLabel(60, 35);
 
     const borderwidth = this.r / 4;
     this.sprite.texture = this.app.renderer.generateTexture(
@@ -108,8 +96,7 @@ export default class Planet {
   }
 
   addConnection(connection) {
-    const second_planet =
-      connection.planetA == this ? connection.planetB : connection.planetA;
+    const second_planet = connection.planetA == this ? connection.planetB : connection.planetA;
     this.connections_dict[second_planet.name] = connection;
     this.connected_planets.push(second_planet);
   }
@@ -153,6 +140,12 @@ export default class Planet {
     this.connections_dict[destination_planet.name].start_sending_ships(this);
   }
 
+  stop_all_sending_ships() {
+    for (const key in this.connections_dict) {
+      this.connections_dict[key].stop_sending_ships(this);
+    }
+  }
+
   updatePopulationLabel() {
     this.label.text = Math.round(this.population, 0).toString();
     this.label._didTextUpdate = true;
@@ -181,7 +174,7 @@ export default class Planet {
     return (
       delta *
       this.breed_rate *
-      Math.sqrt(this.r / this.this_system.r) *
+      Math.pow(this.r / this.this_system.r, 1) *
       0.05 *
       (Math.log2(this.population + 1) + 1) *
       (1 + (Math.random() - 0.5) * PLANET_RANDOM_BREEDING_INFLUENCE)
@@ -197,23 +190,10 @@ export default class Planet {
     }
     // Update the planet
     // i guess we re only updating the color and health of the planet
-    this.sprite.alpha = calc_gradiental_change_float(
-      this.sprite.alpha,
-      this.target.alpha,
-      delta,
-    );
-    this.sprite.scale.set(
-      calc_gradiental_change_float(
-        this.sprite.scale.x,
-        this.target.scale,
-        delta,
-      ),
-    );
-    this.sprite.tint = calc_gradiental_change_color(
-      this.sprite.tint,
-      this.target.color,
-      delta,
-    );
+    this.sprite.alpha = calc_gradiental_change_float(this.sprite.alpha, this.target.alpha, delta);
+    this.sprite.scale.set(calc_gradiental_change_float(this.sprite.scale.x, this.target.scale, delta));
+    this.sprite.tint = calc_gradiental_change_color(this.sprite.tint, this.target.color, delta);
+    this.updateDebugLabel(this.owner ? this.owner.botStrategy : "-");
   }
 
   onMouseDown(event) {

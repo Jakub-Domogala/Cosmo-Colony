@@ -22,6 +22,7 @@ export default class StarSystem {
     this.planets_list = [];
     this.connections_matrix = [];
     this.players = players;
+    this.players_is_alive = new Array(this.players.length).fill(true);
     this.isAllBots = players.every((player) => player.isBot);
     this.connections = [];
     this.draggedPlanet = null;
@@ -30,6 +31,7 @@ export default class StarSystem {
     this.R = null;
     this.r = null;
     this.lastDT = 0;
+    this.elapsedTime = 0;
 
     createMap(this);
     this.newptr = new Pointer(this.app);
@@ -52,20 +54,14 @@ export default class StarSystem {
     if (!this.draggedPlanet) return;
     const collision = this.findIfPlanetCollision(event.data.global);
     if (!collision || collision == this.draggedPlanet) {
-      this.newptr.setPointerPosition(
-        this.draggedPlanet.sprite.position,
-        event.data.global,
-        this.lastDT,
-      );
+      this.newptr.setPointerPosition(this.draggedPlanet.sprite.position, event.data.global, this.lastDT);
     } else {
       this.targetPlanet = collision;
       this.newptr.setPointerPosition(
         this.draggedPlanet.sprite.position,
         this.targetPlanet.sprite.position,
         this.lastDT,
-        this.findIfPlanetsConnection(this.draggedPlanet, this.targetPlanet)
-          ? COLOR_INDICATOR_SUCCESS
-          : COLOR_INDICATOR_FAIL,
+        this.findIfPlanetsConnection(this.draggedPlanet, this.targetPlanet) ? COLOR_INDICATOR_SUCCESS : COLOR_INDICATOR_FAIL,
       );
     }
   }
@@ -118,16 +114,32 @@ export default class StarSystem {
   }
 
   update(delta) {
+    this.mark_killed_players();
     this.lastDT = delta;
+    this.elapsedTime += delta;
     for (let connection of this.connections) connection.update(delta);
     Object.values(this.planets_name2obj).forEach((planet) => {
       planet.update(delta);
     });
-    for (let i = 0; i < this.players.length; i++)
+    // if (this.elapsedTime > 1) {
+    for (let i = 0; i < this.players.length; i++) {
+      if (!this.players_is_alive[i]) continue;
       this.players[i].makeMove(delta, this);
+    }
+    // }
     this.newptr.update(delta);
 
     return this.check_game_status();
+  }
+
+  mark_killed_players() {
+    const tmpAlive = new Array(this.players.length).fill(false);
+    this.planets_list.forEach((planet) => {
+      if (planet.owner) tmpAlive[this.players.indexOf(planet.owner)] = true;
+    });
+    tmpAlive.forEach((alive, idx) => {
+      if (!alive) this.players_is_alive[idx] = false;
+    });
   }
 
   check_game_status() {

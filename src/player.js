@@ -13,6 +13,7 @@ export default class Player {
     this.isBot = botStrategy != STRATEGY_NAMES.HUMAN;
     this.botStrategy = botStrategy;
     this.timeSinceLastMove = 0;
+    this.strat_props = {};
   }
 
   makeMove(delta, starSystem) {

@@ -33,7 +33,7 @@ def saveSystem(circles, connections):
 pygame.init()
 
 # Set up the screen dimensions
-WIDTH, HEIGHT = 1600, 900
+WIDTH, HEIGHT = 1800, 900
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.DOUBLEBUF, 32)
 pygame.display.set_caption("Click to Add Circles")
 
