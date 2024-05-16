@@ -12,6 +12,7 @@ import {
 } from "./settings.js";
 import Pointer from "./pointer.js";
 import STATUS from "./planet/planet_status_enum.js";
+import { move_all_here } from "./player/strategy_functions_impl.js";
 
 export default class StarSystem {
   constructor(data, app, players) {
@@ -85,10 +86,18 @@ export default class StarSystem {
     planetA.start_sending_ships(planetB);
   }
 
+  onClick() {
+    move_all_here(this.draggedPlanet.owner, this.draggedPlanet, this);
+  }
+
   onDragEnd() {
     if (!this.draggedPlanet) return;
     this.newptr.isActive = false;
-    if (this.draggedPlanet == this.targetPlanet) this.targetPlanet = null;
+    if (this.draggedPlanet == this.targetPlanet || !this.targetPlanet) {
+      console.log("all here");
+      this.targetPlanet = null;
+      move_all_here(this.draggedPlanet.owner, this.draggedPlanet, this);
+    }
     this.draggedPlanet.highlightOff();
     this.app.stage.off("pointermove", this.onDragMove);
     this.app.stage.off("pointerup", this.onDragEnd);
@@ -101,7 +110,7 @@ export default class StarSystem {
   }
 
   onDragOver(planet) {
-    if (planet == this.draggedPlanet) return;
+    // if (planet == this.draggedPlanet) return;
     this.targetPlanet = planet;
     planet.highlightOn();
   }
@@ -135,11 +144,11 @@ export default class StarSystem {
   mark_killed_players() {
     const tmpAlive = new Array(this.players.length).fill(false);
     this.planets_list.forEach((planet) => {
-      if (planet.owner) tmpAlive[this.players.indexOf(planet.owner)] = true;
+      if (planet.owner) this.players_is_alive[this.players.indexOf(planet.owner)] = true;
     });
-    tmpAlive.forEach((alive, idx) => {
-      if (!alive) this.players_is_alive[idx] = false;
-    });
+    // tmpAlive.forEach((alive, idx) => {
+    //   if (!alive) this.players_is_alive[idx] = false;
+    // });
   }
 
   check_game_status() {

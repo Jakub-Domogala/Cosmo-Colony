@@ -56,9 +56,9 @@ export function makeMoveRandom(player, delta, starSystem) {
   const my_planets = get_all_owned_planets(player, starSystem);
   if (my_planets.length < 1) return;
   const id = Math.floor(randomInRange(0.001, my_planets.length - 0.1));
-  console.log(id);
+  // console.log(id);
   const planet = get_random_from_list(my_planets);
-  console.log("Random move from planet", planet, my_planets);
+  // console.log("Random move from planet", planet, my_planets);
   const neighbors = get_all_planets_next2planet(planet, starSystem);
   if (neighbors.length < 1) return;
   const target = get_random_from_list(neighbors);
@@ -111,6 +111,14 @@ function get_attack_plan_for_island(island, target, star_system) {
     }
   }
   return attack_plan;
+}
+
+export function move_all_here(player, planet, star_system) {
+  const visited = Array(star_system.planets_list.length).fill(false);
+  const island = dfs_find_my_connected_planets(player, planet, visited, star_system);
+  if (island.length < 2) return;
+  const plan = get_attack_plan_for_island(island, planet, star_system);
+  send_ships_by_plan(plan);
 }
 
 function dijksta_attack_plan_from_planet_to_planets_from_island(target_planet, island, star_system) {
