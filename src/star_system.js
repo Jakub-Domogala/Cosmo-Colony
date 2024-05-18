@@ -13,6 +13,7 @@ import {
 import Pointer from "./pointer.js";
 import STATUS from "./planet/planet_status_enum.js";
 import { move_all_here } from "./player/strategy_functions_impl.js";
+import * as PIXI from "pixi.js";
 
 export default class StarSystem {
   constructor(data, app, players) {
@@ -24,6 +25,7 @@ export default class StarSystem {
     this.connections_matrix = [];
     this.players = players;
     this.players_is_alive = new Array(this.players.length).fill(true);
+    this.players_population = new Array(this.players.length).fill(0);
     this.isAllBots = players.every((player) => player.isBot);
     this.connections = [];
     this.draggedPlanet = null;
@@ -33,10 +35,30 @@ export default class StarSystem {
     this.r = null;
     this.lastDT = 0;
     this.elapsedTime = 0;
+    this.chart_container = null;
 
     createMap(this);
     this.newptr = new Pointer(this.app);
     this.app.stage.addChild(this.newptr.sprite);
+    this.add_population_chart();
+  }
+
+  add_population_chart() {
+    const container = new PIXI.Container();
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+    container.position.set(width - 200, height - 200);
+    this.chart_container = container;
+    console.log(this.players);
+    for (let i = 0; i < this.players.length; i++) {
+      const chart = new PIXI.Graphics();
+      chart.roundRect(0, 0 + i * 20, 20, 20, 5);
+      chart.fill(0xffffff);
+      container.addChild(chart);
+      // console.log(chart);
+    }
+    console.log(container);
+    this.app.stage.addChild(container);
   }
 
   onPlanetDrag(planet) {
@@ -122,6 +144,35 @@ export default class StarSystem {
     }
   }
 
+  update_populations() {
+    this.players_population = new Array(this.players.length).fill(0);
+    this.planets_list.forEach((planet) => {
+      if (planet.owner) this.players_population[this.players.indexOf(planet.owner)] += planet.population;
+    });
+    // console.log(this.players_population);
+  }
+
+  update_population_chart() {
+    const container = this.chart_container;
+    const padding = 10;
+    const bar_width = 20;
+    container.position.set(window.innerWidth - 200 - padding, 10);
+    // console.log(container);
+    let max_population = Math.max(...this.players_population);
+    const total_population = this.players_population.reduce((a, b) => a + b, 0);
+    const max_bar_size = 200;
+    for (let i = 0; i < this.players.length; i++) {
+      const chart = container.children[i];
+      console.log(container);
+      console.log(chart);
+      const population = this.players_population[i];
+      chart.clear();
+      chart.roundRect(0, 0 + (bar_width + padding) * i, (max_bar_size * population) / total_population, bar_width, bar_width / 4);
+      chart.fill(this.players[i].color);
+      // container.addChild(chart);
+    }
+  }
+
   update(delta) {
     this.mark_killed_players();
     this.lastDT = delta;
@@ -137,6 +188,8 @@ export default class StarSystem {
     }
     // }
     this.newptr.update(delta);
+    this.update_populations();
+    this.update_population_chart();
 
     return this.check_game_status();
   }
