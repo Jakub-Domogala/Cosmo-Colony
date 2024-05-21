@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cosmo Colony</title>
+      <script type="module" crossorigin src="/assets/index-DARV-rFV.js"></script>
+      <link rel="stylesheet" crossorigin href="/assets/index-CuDbQxvz.css">
+    </head>
+    <body>
+        <div id="entryScreen" class="entry">
+            <h1>Cosmo Colony!</h1>
+            <label for="playerName">Player Name:</label>
+            <input type="text" id="playerName" value="Player 1" /><br /><br />
+            <label for="gameDifficulty">Game Difficulty:</label>
+            <input type="number" id="gameDifficulty" value="1" min="1" max="10" /><br /><br />
+            <button id="startButton">Start Game</button>
+        </div>
+        <div id="gameContainer" style="display: none">
+            <!-- Your game content goes here -->
+        </div>
+        <div id="gameOverScreen" class="end">
+            <h1>Game Over!</h1>
+            <button id="restartButton">Play Again</button>
+            <!-- Add any additional content for the game over screen here -->
+        </div>
+
+    </body>
+</html>
