@@ -15,7 +15,7 @@ Neutral planets are colored grey
 - in main directory run:
   - npm install
   - npm run dev
-  - the game is now locally hosted
+  - the game is now locally hosted. 
 
 ## Game Controls
 
@@ -34,3 +34,6 @@ Neutral planets are colored grey
 
 ![send](https://github.com/Jakub-Domogala/Cosmo-Colony/assets/78169141/980212c3-4936-4ca6-86a0-6246421df922)
 ![gather](https://github.com/Jakub-Domogala/Cosmo-Colony/assets/78169141/46ee5017-6ecb-47e7-9ec0-f843ba5843e7)
+
+## Notes
+- 22.05.2024 - 3 diffrent bot algorithms added
