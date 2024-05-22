@@ -2,11 +2,7 @@
 Based on childhood memories
 
 
-Click [here](https://www.geeksforgeeks.org/)
-
-Click [blank](https://www.geeksforgeeks.org/){:target="_blank"}  
-
-<a href="https://www.geeksforgeeks.org/" target="_blank">here</a> to visit GeeksForGeeks website. 
+Click [here](https://jakub-domogala.github.io/Cosmo-Colony/) to play the game online
 
 ## Try it yourself
 - clone this repo
