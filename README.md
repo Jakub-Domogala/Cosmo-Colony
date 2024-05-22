@@ -30,10 +30,19 @@ Neutral planets are colored grey
 
 `LMB` - left mouse button
 
+
+## Features
+- starting screen
+- fully working game mechanics
+- bot models:
+  - random - random move from random planet
+  - primitive - locally analyse current game status and make decision based on it
+  - allin - globally analyse current game status and make decision based on all of his planets and taking into accout powers of all of other players planets
+- population chart for realtime universe situation status
+- ending screen
+
 ## Game preview
 
 ![send](https://github.com/Jakub-Domogala/Cosmo-Colony/assets/78169141/980212c3-4936-4ca6-86a0-6246421df922)
 ![gather](https://github.com/Jakub-Domogala/Cosmo-Colony/assets/78169141/46ee5017-6ecb-47e7-9ec0-f843ba5843e7)
 
-## Notes
-- 22.05.2024 - 3 diffrent bot algorithms added
