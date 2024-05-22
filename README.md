@@ -6,6 +6,8 @@ Click [here](https://www.geeksforgeeks.org/)
 
 Click [blank](https://www.geeksforgeeks.org/){:target="_blank"}  
 
+<a href="https://www.geeksforgeeks.org/" target="_blank">here</a> to visit GeeksForGeeks website. 
+
 ## Try it yourself
 - clone this repo
 - in main directory run:
