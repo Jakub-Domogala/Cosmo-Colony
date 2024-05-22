@@ -41,11 +41,11 @@ export function makeMoveAllIn(player, delta, star_system) {
       }
     }
     send_ships_by_plan(all_plans);
-    player.strat_props.current_chill_level = Math.min(player.strat_props.current_chill_level * 1.05, player.strat_props.target_chill_level);
+    player.strat_props.current_chill_level = Math.min(player.strat_props.current_chill_level * 1.09, player.strat_props.target_chill_level);
     player.strat_props.current_chill_level = parseFloat(player.strat_props.current_chill_level.toFixed(2));
   } else {
     primitive_regroup_all(player, star_system);
-    player.strat_props.current_chill_level *= 0.95;
+    player.strat_props.current_chill_level *= 0.97;
     player.strat_props.current_chill_level = parseFloat(player.strat_props.current_chill_level.toFixed(2));
   }
 }

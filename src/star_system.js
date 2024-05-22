@@ -49,7 +49,7 @@ export default class StarSystem {
     const width = window.innerWidth;
     container.position.set(width - 200, height - 200);
     this.chart_container = container;
-    console.log(this.players);
+    // console.log(this.players);
     for (let i = 0; i < this.players.length; i++) {
       const chart = new PIXI.Graphics();
       chart.roundRect(0, 0 + i * 20, 20, 20, 5);
@@ -57,7 +57,7 @@ export default class StarSystem {
       container.addChild(chart);
       // console.log(chart);
     }
-    console.log(container);
+    // console.log(container);
     this.app.stage.addChild(container);
   }
 
@@ -116,7 +116,7 @@ export default class StarSystem {
     if (!this.draggedPlanet) return;
     this.newptr.isActive = false;
     if (this.draggedPlanet == this.targetPlanet || !this.targetPlanet) {
-      console.log("all here");
+      // console.log("all here");
       this.targetPlanet = null;
       move_all_here(this.draggedPlanet.owner, this.draggedPlanet, this);
     }
@@ -163,8 +163,8 @@ export default class StarSystem {
     const max_bar_size = 200;
     for (let i = 0; i < this.players.length; i++) {
       const chart = container.children[i];
-      console.log(container);
-      console.log(chart);
+      // console.log(container);
+      // console.log(chart);
       const population = this.players_population[i];
       chart.clear();
       chart.roundRect(0, 0 + (bar_width + padding) * i, (max_bar_size * population) / total_population, bar_width, bar_width / 4);

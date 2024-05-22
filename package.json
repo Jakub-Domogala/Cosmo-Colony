@@ -2,14 +2,18 @@
   "name": "vite_cosmo_colonny",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://jakub-domogala.github.io/Cosmo-Colony",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.2.0",
-    "pixi.js": "^8.1.0"
+    "gh-pages": "^6.1.1",
+    "pixi.js": "^8.1.0",
+    "vite": "^5.2.0"
   }
 }
