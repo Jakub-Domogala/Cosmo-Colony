@@ -1,0 +1,1 @@
+{"planets": [{"name": "1", "occupied": true, "x": 464, "y": 175, "radius": 20}, {"name": "2", "occupied": true, "x": 236, "y": 301, "radius": 20}, {"name": "3", "occupied": false, "x": 600, "y": 446, "radius": 20}, {"name": "4", "occupied": false, "x": 274, "y": 178, "radius": 20}], "connections": [{"A": "2", "B": "4"}]}

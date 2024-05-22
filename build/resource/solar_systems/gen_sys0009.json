@@ -1,0 +1,28 @@
+{
+  "planets": [
+    { "name": "1", "occupied": true, "x": 212, "y": 186, "radius": 50 },
+    { "name": "2", "occupied": false, "x": 630, "y": 164, "radius": 40 },
+    { "name": "3", "occupied": false, "x": 389, "y": 533, "radius": 65 },
+    { "name": "4", "occupied": true, "x": 1060, "y": 416, "radius": 40 },
+    { "name": "5", "occupied": true, "x": 1376, "y": 185, "radius": 40 },
+    { "name": "6", "occupied": false, "x": 1479, "y": 497, "radius": 40 },
+    { "name": "7", "occupied": false, "x": 802, "y": 698, "radius": 40 },
+    { "name": "8", "occupied": false, "x": 935, "y": 208, "radius": 40 },
+    { "name": "9", "occupied": true, "x": 690, "y": 410, "radius": 40 }
+  ],
+  "connections": [
+    { "A": "6", "B": "6" },
+    { "A": "5", "B": "6" },
+    { "A": "6", "B": "4" },
+    { "A": "4", "B": "8" },
+    { "A": "8", "B": "9" },
+    { "A": "9", "B": "2" },
+    { "A": "2", "B": "3" },
+    { "A": "3", "B": "7" },
+    { "A": "7", "B": "1" },
+    { "A": "1", "B": "3" },
+    { "A": "3", "B": "9" },
+    { "A": "9", "B": "4" },
+    { "A": "4", "B": "5" }
+  ]
+}

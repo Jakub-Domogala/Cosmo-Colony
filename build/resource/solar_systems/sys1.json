@@ -1,0 +1,120 @@
+{
+  "universe": {
+    "name": "Solar System",
+    "x": 0,
+    "y": 0,
+    "width": 800,
+    "height": 800
+  },
+  "planets": [
+    {
+      "name": "Mercury",
+      "occupied": true,
+      "x": 100,
+      "y": 100,
+      "radius": 10
+    },
+    {
+      "name": "Venus",
+      "occupied": false,
+      "x": 400,
+      "y": 150,
+      "radius": 20
+    },
+    {
+      "name": "Earth",
+      "occupied": false,
+      "x": 350,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "Mars",
+      "occupied": true,
+      "x": 600,
+      "y": 200,
+      "radius": 40
+    },
+    {
+      "name": "Jupiter",
+      "occupied": true,
+      "x": 500,
+      "y": 500,
+      "radius": 20
+    },
+    {
+      "name": "Saturn",
+      "occupied": false,
+      "x": 900,
+      "y": 250,
+      "radius": 40
+    },
+    {
+      "name": "Uranus",
+      "occupied": false,
+      "x": 750,
+      "y": 400,
+      "radius": 20
+    },
+    {
+      "name": "Neptune",
+      "occupied": true,
+      "x": 700,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "Pluto",
+      "occupied": false,
+      "x": 1000,
+      "y": 50,
+      "radius": 20
+    }
+  ],
+  "connections": [
+    {
+      "A": "Mercury",
+      "B": "Venus"
+    },
+    {
+      "A": "Venus",
+      "B": "Earth"
+    },
+    {
+      "A": "Earth",
+      "B": "Mars"
+    },
+    {
+      "A": "Mars",
+      "B": "Saturn"
+    },
+    {
+      "A": "Earth",
+      "B": "Uranus"
+    },
+    {
+      "A": "Saturn",
+      "B": "Uranus"
+    },
+    {
+      "A": "Uranus",
+      "B": "Neptune"
+    },
+    {
+      "A": "Neptune",
+      "B": "Jupiter"
+    },
+    {
+      "A": "Jupiter",
+      "B": "Earth"
+    },
+    {
+      "A": "Mercury",
+      "B": "Pluto"
+    },
+    {
+      "A": "Pluto",
+      "B": "Saturn"
+    }
+  ]
+}
