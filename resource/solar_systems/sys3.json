@@ -1,0 +1,498 @@
+{
+  "planets": [
+    {
+      "name": "AA",
+      "occupied": true,
+      "x": 100,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "BA",
+      "occupied": false,
+      "x": 200,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "CA",
+      "occupied": false,
+      "x": 300,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "DA",
+      "occupied": false,
+      "x": 400,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "EA",
+      "occupied": false,
+      "x": 500,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "FA",
+      "occupied": true,
+      "x": 600,
+      "y": 100,
+      "radius": 30
+    },
+    {
+      "name": "AB",
+      "occupied": false,
+      "x": 100,
+      "y": 200,
+      "radius": 30
+    },
+    {
+      "name": "BB",
+      "occupied": false,
+      "x": 200,
+      "y": 200,
+      "radius": 40
+    },
+    {
+      "name": "CB",
+      "occupied": false,
+      "x": 300,
+      "y": 200,
+      "radius": 30
+    },
+    {
+      "name": "DB",
+      "occupied": false,
+      "x": 400,
+      "y": 200,
+      "radius": 30
+    },
+    {
+      "name": "EB",
+      "occupied": false,
+      "x": 500,
+      "y": 200,
+      "radius": 30
+    },
+    {
+      "name": "FB",
+      "occupied": false,
+      "x": 600,
+      "y": 200,
+      "radius": 30
+    },
+    {
+      "name": "AC",
+      "occupied": false,
+      "x": 100,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "BC",
+      "occupied": false,
+      "x": 200,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "CC",
+      "occupied": false,
+      "x": 300,
+      "y": 300,
+      "radius": 40
+    },
+    {
+      "name": "DC",
+      "occupied": false,
+      "x": 400,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "EC",
+      "occupied": false,
+      "x": 500,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "FC",
+      "occupied": false,
+      "x": 600,
+      "y": 300,
+      "radius": 30
+    },
+    {
+      "name": "AD",
+      "occupied": false,
+      "x": 100,
+      "y": 400,
+      "radius": 30
+    },
+    {
+      "name": "BD",
+      "occupied": false,
+      "x": 200,
+      "y": 400,
+      "radius": 30
+    },
+    {
+      "name": "CD",
+      "occupied": false,
+      "x": 300,
+      "y": 400,
+      "radius": 30
+    },
+    {
+      "name": "DD",
+      "occupied": false,
+      "x": 400,
+      "y": 400,
+      "radius": 40
+    },
+    {
+      "name": "ED",
+      "occupied": false,
+      "x": 500,
+      "y": 400,
+      "radius": 30
+    },
+    {
+      "name": "FD",
+      "occupied": false,
+      "x": 600,
+      "y": 400,
+      "radius": 30
+    },
+    {
+      "name": "AE",
+      "occupied": false,
+      "x": 100,
+      "y": 500,
+      "radius": 30
+    },
+    {
+      "name": "BE",
+      "occupied": true,
+      "x": 200,
+      "y": 500,
+      "radius": 30
+    },
+    {
+      "name": "CE",
+      "occupied": false,
+      "x": 300,
+      "y": 500,
+      "radius": 30
+    },
+    {
+      "name": "DE",
+      "occupied": false,
+      "x": 400,
+      "y": 500,
+      "radius": 30
+    },
+    {
+      "name": "EE",
+      "occupied": false,
+      "x": 500,
+      "y": 500,
+      "radius": 40
+    },
+    {
+      "name": "FE",
+      "occupied": false,
+      "x": 600,
+      "y": 500,
+      "radius": 30
+    },
+    {
+      "name": "AF",
+      "occupied": false,
+      "x": 100,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "BF",
+      "occupied": false,
+      "x": 200,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "CF",
+      "occupied": false,
+      "x": 300,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "DF",
+      "occupied": false,
+      "x": 400,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "EF",
+      "occupied": false,
+      "x": 500,
+      "y": 600,
+      "radius": 30
+    },
+    {
+      "name": "FF",
+      "occupied": true,
+      "x": 600,
+      "y": 600,
+      "radius": 30
+    }
+  ],
+  "connections": [
+    {
+      "A": "AA",
+      "B": "BA"
+    },
+    {
+      "A": "BA",
+      "B": "CA"
+    },
+    {
+      "A": "CA",
+      "B": "DA"
+    },
+    {
+      "A": "DA",
+      "B": "EA"
+    },
+    {
+      "A": "EA",
+      "B": "FA"
+    },
+    {
+      "A": "AB",
+      "B": "BB"
+    },
+    {
+      "A": "BB",
+      "B": "CB"
+    },
+    {
+      "A": "CB",
+      "B": "DB"
+    },
+    {
+      "A": "DB",
+      "B": "EB"
+    },
+    {
+      "A": "EB",
+      "B": "FB"
+    },
+    {
+      "A": "AC",
+      "B": "BC"
+    },
+    {
+      "A": "BC",
+      "B": "CC"
+    },
+    {
+      "A": "CC",
+      "B": "DC"
+    },
+    {
+      "A": "DC",
+      "B": "EC"
+    },
+    {
+      "A": "EC",
+      "B": "FC"
+    },
+    {
+      "A": "AD",
+      "B": "BD"
+    },
+    {
+      "A": "BD",
+      "B": "CD"
+    },
+    {
+      "A": "CD",
+      "B": "DD"
+    },
+    {
+      "A": "DD",
+      "B": "ED"
+    },
+    {
+      "A": "ED",
+      "B": "FD"
+    },
+    {
+      "A": "AE",
+      "B": "BE"
+    },
+    {
+      "A": "BE",
+      "B": "CE"
+    },
+    {
+      "A": "CE",
+      "B": "DE"
+    },
+    {
+      "A": "DE",
+      "B": "EE"
+    },
+    {
+      "A": "EE",
+      "B": "FE"
+    },
+    {
+      "A": "AF",
+      "B": "BF"
+    },
+    {
+      "A": "BF",
+      "B": "CF"
+    },
+    {
+      "A": "CF",
+      "B": "DF"
+    },
+    {
+      "A": "DF",
+      "B": "EF"
+    },
+    {
+      "A": "EF",
+      "B": "FF"
+    },
+    {
+      "A": "AA",
+      "B": "AB"
+    },
+    {
+      "A": "AB",
+      "B": "AC"
+    },
+    {
+      "A": "AC",
+      "B": "AD"
+    },
+    {
+      "A": "AD",
+      "B": "AE"
+    },
+    {
+      "A": "AE",
+      "B": "AF"
+    },
+    {
+      "A": "BA",
+      "B": "BB"
+    },
+    {
+      "A": "BB",
+      "B": "BC"
+    },
+    {
+      "A": "BC",
+      "B": "BD"
+    },
+    {
+      "A": "BD",
+      "B": "BE"
+    },
+    {
+      "A": "BE",
+      "B": "BF"
+    },
+    {
+      "A": "CA",
+      "B": "CB"
+    },
+    {
+      "A": "CB",
+      "B": "CC"
+    },
+    {
+      "A": "CC",
+      "B": "CD"
+    },
+    {
+      "A": "CD",
+      "B": "CE"
+    },
+    {
+      "A": "CE",
+      "B": "CF"
+    },
+    {
+      "A": "DA",
+      "B": "DB"
+    },
+    {
+      "A": "DB",
+      "B": "DC"
+    },
+    {
+      "A": "DC",
+      "B": "DD"
+    },
+    {
+      "A": "DD",
+      "B": "DE"
+    },
+    {
+      "A": "DE",
+      "B": "DF"
+    },
+    {
+      "A": "EA",
+      "B": "EB"
+    },
+    {
+      "A": "EB",
+      "B": "EC"
+    },
+    {
+      "A": "EC",
+      "B": "ED"
+    },
+    {
+      "A": "ED",
+      "B": "EE"
+    },
+    {
+      "A": "EE",
+      "B": "EF"
+    },
+    {
+      "A": "FA",
+      "B": "FB"
+    },
+    {
+      "A": "FB",
+      "B": "FC"
+    },
+    {
+      "A": "FC",
+      "B": "FD"
+    },
+    {
+      "A": "FD",
+      "B": "FE"
+    },
+    {
+      "A": "FE",
+      "B": "FF"
+    }
+  ]
+}
