@@ -14,23 +14,26 @@ export async function getApp() {
   return app;
 }
 
-export function getPlayers(app) {
+export function getPlayers(app, humanCount = 1, aiCount = 3) {
   const players = [];
-  for (let i = 0; i < Math.min(PLAYERS_AMOUNT, COLORS_PLAYERS.length); i++)
+  const total = Math.min(humanCount + aiCount, COLORS_PLAYERS.length);
+  for (let i = 0; i < total; i++) {
+    const isHuman = i < humanCount;
     players.push(
       new Player(
-        `player${i}`,
+        isHuman ? 'Player' : `Bot${i}`,
         COLORS_PLAYERS[i],
         app,
-        i > 0 || BOTS_ONLY ? get_random_elem_from_list_or_dict(BOTS_STRATEGIES_POOL) : STRATEGY_NAMES.HUMAN,
+        isHuman ? STRATEGY_NAMES.HUMAN : get_random_elem_from_list_or_dict(BOTS_STRATEGIES_POOL),
       ),
     );
+  }
   return players;
 }
 
-export async function getStarSystem(app, players) {
+export async function getStarSystem(app, players, mapFilename = INPUT_SYSTEM_JSON) {
   try {
-    const response = await fetch(`./resource/solar_systems/${INPUT_SYSTEM_JSON}`);
+    const response = await fetch(`./resource/solar_systems/${mapFilename}`);
 
     if (!response.ok) {
       throw new Error("Network response was not ok");

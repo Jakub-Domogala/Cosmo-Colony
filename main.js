@@ -2,12 +2,180 @@ import { calc_gradiental_change_float } from "./src/common/common_utils.js";
 import { getApp, getPlayers, getStarSystem } from "./src/init_utils.js";
 import { GAME_STATUS_GOING, GAME_STATUS_LAST_BOT_STANDING, GAME_STATUS_LOST, GAME_STATUS_WON, GAME_TEMPO } from "./src/settings.js";
 
+const MAP_FILES = [
+  'gen_sys0001.json',
+  'gen_sys0002.json',
+  'gen_sys0003.json',
+  'gen_sys0004.json',
+  'gen_sys0005.json',
+  'gen_sys0006.json',
+  'gen_sys0007.json',
+  'gen_sys0008.json',
+  'gen_sys0009.json',
+  'gen_sys0010.json',
+  'gen_sys_dfs.json',
+  'sys1.json',
+  'sys2.json',
+  'sys3.json',
+];
+
+let selectedMap = null;
+let mapPreviews = {}; // cache for map data
+
 function showGameOverScreen() {
   document.getElementById("gameContainer").style.display = "none";
-  // document.getElementsByClassName("game-canvas")[0].style.display = "none";
   document.getElementById("gameOverScreen").style.display = "flex";
 }
-// Function to hide the entry screen and start the game
+
+function clearValidationError() {
+  document.getElementById("validationError").textContent = "";
+}
+
+function showValidationError(message) {
+  document.getElementById("validationError").textContent = message;
+}
+
+function validatePlayerCounts() {
+  const humanCount = parseInt(document.getElementById("humanPlayers").value) || 0;
+  const aiCount = parseInt(document.getElementById("aiPlayers").value) || 0;
+  const total = humanCount + aiCount;
+
+  clearValidationError();
+
+  if (total < 1) {
+    showValidationError("Total players must be at least 1");
+    return false;
+  }
+  if (total > 10) {
+    showValidationError("Total players cannot exceed 10");
+    return false;
+  }
+  return true;
+}
+
+function updateStartButtonState() {
+  const hasSelectedMap = selectedMap !== null;
+  const countsValid = validatePlayerCounts();
+  document.getElementById("startButton").disabled = !(hasSelectedMap && countsValid);
+}
+
+function computeBoundingBox(planets) {
+  if (planets.length === 0) return { minX: 0, maxX: 100, minY: 0, maxY: 100 };
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+  for (const planet of planets) {
+    minX = Math.min(minX, planet.x - planet.radius);
+    maxX = Math.max(maxX, planet.x + planet.radius);
+    minY = Math.min(minY, planet.y - planet.radius);
+    maxY = Math.max(maxY, planet.y + planet.radius);
+  }
+
+  return { minX, maxX, minY, maxY };
+}
+
+function createSvgPreview(mapData, width, height) {
+  const { planets, connections } = mapData;
+  const { minX, maxX, minY, maxY } = computeBoundingBox(planets);
+
+  const padding = 20;
+  const viewBoxWidth = maxX - minX + padding * 2;
+  const viewBoxHeight = maxY - minY + padding * 2;
+
+  let svg = `<svg viewBox="${minX - padding} ${minY - padding} ${viewBoxWidth} ${viewBoxHeight}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<rect x="${minX - padding}" y="${minY - padding}" width="${viewBoxWidth}" height="${viewBoxHeight}" fill="#061536"/>`;
+
+  // Draw connections first (so they appear behind planets)
+  if (connections) {
+    for (const conn of connections) {
+      const planetA = planets.find(p => p.name === conn.A);
+      const planetB = planets.find(p => p.name === conn.B);
+
+      if (planetA && planetB) {
+        svg += `<line x1="${planetA.x}" y1="${planetA.y}" x2="${planetB.x}" y2="${planetB.y}" stroke="#444" stroke-width="1.5"/>`;
+      }
+    }
+  }
+
+  // Draw planets
+  for (const planet of planets) {
+    const scaleFactor = Math.min(width / viewBoxWidth, height / viewBoxHeight);
+    const r = Math.max(1.5, planet.radius * 0.8);
+
+    const color = planet.occupied ? '#00ff00' : '#999999';
+    svg += `<circle cx="${planet.x}" cy="${planet.y}" r="${r}" fill="${color}" opacity="0.85"/>`;
+  }
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function selectMap(filename) {
+  selectedMap = filename;
+
+  // Update UI
+  document.querySelectorAll('.map-thumbnail').forEach(card => {
+    card.classList.remove('selected');
+  });
+  document.querySelector(`[data-map="${filename}"]`)?.classList.add('selected');
+
+  updateStartButtonState();
+}
+
+async function initializeMapPicker() {
+  const container = document.getElementById("mapPickerContainer");
+
+  for (const mapFile of MAP_FILES) {
+    try {
+      // Fetch and cache map data
+      if (!mapPreviews[mapFile]) {
+        const response = await fetch(`./resource/solar_systems/${mapFile}`);
+        if (!response.ok) continue;
+        mapPreviews[mapFile] = await response.json();
+      }
+
+      const mapData = mapPreviews[mapFile];
+      const svgContent = createSvgPreview(mapData, 120, 90);
+
+      const thumbnail = document.createElement("button");
+      thumbnail.className = "map-thumbnail";
+      thumbnail.dataset.map = mapFile;
+      thumbnail.innerHTML = svgContent;
+      thumbnail.type = "button";
+
+      thumbnail.addEventListener("click", (e) => {
+        e.preventDefault();
+        selectMap(mapFile);
+      });
+
+      thumbnail.addEventListener("mouseenter", (e) => {
+        const tooltip = document.getElementById("mapPreviewTooltip");
+        const largerSvg = createSvgPreview(mapData, 300, 225);
+        tooltip.innerHTML = largerSvg;
+
+        // Position tooltip near cursor
+        tooltip.style.display = "block";
+        tooltip.style.left = (e.clientX + 10) + "px";
+        tooltip.style.top = (e.clientY + 10) + "px";
+      });
+
+      thumbnail.addEventListener("mousemove", (e) => {
+        const tooltip = document.getElementById("mapPreviewTooltip");
+        tooltip.style.left = (e.clientX + 10) + "px";
+        tooltip.style.top = (e.clientY + 10) + "px";
+      });
+
+      thumbnail.addEventListener("mouseleave", () => {
+        document.getElementById("mapPreviewTooltip").style.display = "none";
+      });
+
+      container.appendChild(thumbnail);
+    } catch (error) {
+      console.error(`Failed to load map ${mapFile}:`, error);
+    }
+  }
+}
+
 function startGame() {
   const gameCanvas = document.getElementsByClassName("game-canvas")[0];
   if (gameCanvas) {
@@ -15,12 +183,21 @@ function startGame() {
   }
   const overScreen = document.getElementById("gameOverScreen");
   if (overScreen) {
-    // console.log("remove end screen");
     overScreen.style.display = "none";
   }
-  const playerName = document.getElementById("playerName").value;
-  const gameDifficulty = parseInt(document.getElementById("gameDifficulty").value);
-  // console.log(playerName, gameDifficulty);
+
+  // Validation
+  if (!selectedMap) {
+    showValidationError("Please select a map");
+    return;
+  }
+
+  const humanCount = parseInt(document.getElementById("humanPlayers").value) || 0;
+  const aiCount = parseInt(document.getElementById("aiPlayers").value) || 0;
+
+  if (!validatePlayerCounts()) {
+    return;
+  }
 
   document.getElementById("entryScreen").style.display = "none";
   document.getElementById("gameContainer").style.display = "flex";
@@ -28,13 +205,8 @@ function startGame() {
   // INIT APP
   (async () => {
     const app = await getApp();
-    const players = getPlayers(app);
-    const starSystem = await getStarSystem(
-      app,
-      players,
-      // playerName,
-      // gameDifficulty,
-    );
+    const players = getPlayers(app, humanCount, aiCount);
+    const starSystem = await getStarSystem(app, players, selectedMap);
 
     // RUN GAME LOOP
     let speedup = 1;
@@ -42,7 +214,7 @@ function startGame() {
     let elapsed = 0.0;
     let epsilon = 0.001;
     let endGame = false;
-    // app.ticker.maxFPS = 1;
+
     app.ticker.add((ticker) => {
       elapsed += ticker.deltaTime;
       const dt = ticker.deltaMS / 1000;
@@ -73,7 +245,15 @@ function startGame() {
   })();
 }
 
-// Event listener for the start button
+// Initialize the map picker when DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+  initializeMapPicker();
+
+  // Add event listeners for player count validation
+  document.getElementById("humanPlayers").addEventListener("change", updateStartButtonState);
+  document.getElementById("aiPlayers").addEventListener("change", updateStartButtonState);
+});
+
+// Event listeners for buttons
 document.getElementById("startButton").addEventListener("click", startGame);
 document.getElementById("restartButton").addEventListener("click", startGame);
-// startGame();
