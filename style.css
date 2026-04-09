@@ -92,8 +92,16 @@ button:disabled {
     font-weight: bold;
 }
 
-.config-row input {
+.config-row input[type="number"],
+.config-row input[type="text"] {
     flex: 0 0 100px;
+}
+
+.config-row input[type="checkbox"] {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
 .validation-error {

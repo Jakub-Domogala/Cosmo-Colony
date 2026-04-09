@@ -28,7 +28,7 @@ function showValidationError(message) {
 }
 
 function validatePlayerCounts() {
-  const humanCount = parseInt(document.getElementById("humanPlayers").value) || 0;
+  const humanCount = document.getElementById("humanPlayersToggle").checked ? 1 : 0;
   const aiCount = parseInt(document.getElementById("aiPlayers").value) || 0;
   const total = humanCount + aiCount;
 
@@ -209,7 +209,7 @@ function startGame() {
     return;
   }
 
-  const humanCount = parseInt(document.getElementById("humanPlayers").value) || 0;
+  const humanCount = document.getElementById("humanPlayersToggle").checked ? 1 : 0;
   const aiCount = parseInt(document.getElementById("aiPlayers").value) || 0;
 
   if (!validatePlayerCounts()) {
@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeMapPicker();
 
   // Add event listeners for player count validation
-  document.getElementById("humanPlayers").addEventListener("change", updateStartButtonState);
+  document.getElementById("humanPlayersToggle").addEventListener("change", updateStartButtonState);
   document.getElementById("aiPlayers").addEventListener("change", updateStartButtonState);
 });
 
