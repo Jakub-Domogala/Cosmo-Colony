@@ -154,7 +154,8 @@ async function initializeMapPicker() {
       thumbnail.addEventListener("mouseenter", (e) => {
         const tooltip = document.getElementById("mapPreviewTooltip");
         const largerSvg = createSvgPreview(mapData, 300, 225);
-        tooltip.innerHTML = largerSvg;
+        const mapName = mapFile.replace('.json', ''); // Remove .json extension
+        tooltip.innerHTML = `<div style="padding: 8px; text-align: center; font-size: 12px; color: #00aaff; font-weight: bold; border-bottom: 1px solid #00aaff;">${mapName}</div>${largerSvg}`;
 
         // Position tooltip near cursor
         tooltip.style.display = "block";
