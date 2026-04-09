@@ -2,22 +2,11 @@ import { calc_gradiental_change_float } from "./src/common/common_utils.js";
 import { getApp, getPlayers, getStarSystem } from "./src/init_utils.js";
 import { GAME_STATUS_GOING, GAME_STATUS_LAST_BOT_STANDING, GAME_STATUS_LOST, GAME_STATUS_WON, GAME_TEMPO } from "./src/settings.js";
 
-const MAP_FILES = [
-  'gen_sys0001.json',
-  'gen_sys0002.json',
-  'gen_sys0003.json',
-  'gen_sys0004.json',
-  'gen_sys0005.json',
-  'gen_sys0006.json',
-  'gen_sys0007.json',
-  'gen_sys0008.json',
-  'gen_sys0009.json',
-  'gen_sys0010.json',
-  'gen_sys_dfs.json',
-  'sys1.json',
-  'sys2.json',
-  'sys3.json',
-];
+// Dynamically discover all .json map files in the resource/solar_systems directory
+const mapModules = import.meta.glob('./resource/solar_systems/*.json', { eager: true });
+const MAP_FILES = Object.keys(mapModules)
+  .map(path => path.split('/').pop()) // Extract filename from path
+  .sort();
 
 let selectedMap = null;
 let mapPreviews = {}; // cache for map data
@@ -130,14 +119,17 @@ async function initializeMapPicker() {
 
   for (const mapFile of MAP_FILES) {
     try {
-      // Fetch and cache map data (cache is persistent across games)
-      if (!mapPreviews[mapFile]) {
-        const response = await fetch(`./resource/solar_systems/${mapFile}`);
-        if (!response.ok) continue;
-        mapPreviews[mapFile] = await response.json();
+      // Get map data from preloaded modules
+      const modulePath = `./resource/solar_systems/${mapFile}`;
+      const mapData = mapModules[modulePath]?.default || mapModules[modulePath];
+
+      if (!mapData) {
+        console.warn(`Map module not found: ${mapFile}`);
+        continue;
       }
 
-      const mapData = mapPreviews[mapFile];
+      // Cache for tooltip previews
+      mapPreviews[mapFile] = mapData;
       const svgContent = createSvgPreview(mapData, 120, 90);
 
       const thumbnail = document.createElement("button");
