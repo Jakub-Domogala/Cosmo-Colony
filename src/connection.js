@@ -27,8 +27,17 @@ export default class Connection {
 
     this.target = { scale: 1, alpha: 0.5, tint: COLOR_CONNECTION };
 
+    // Cache textures to avoid regenerating them repeatedly
+    this.texture_normal = null;
+    this.texture_hover = null;
+
     this.sendingA2B = new Sending(planetA, planetB, app);
     this.sendingB2A = new Sending(planetB, planetA, app);
+
+    // Store bound methods for proper cleanup
+    this.boundClick = this.click.bind(this);
+    this.boundPointerOver = this.pointerOver.bind(this);
+    this.boundPointerOut = this.pointerOut.bind(this);
 
     // add sprite on click to cancel sending ships
 
@@ -41,7 +50,12 @@ export default class Connection {
     this.sprite.y = (this.cordinates[0][1] + this.cordinates[1][1]) / 2;
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(1);
-    this.sprite.texture = this.app.renderer.generateTexture(get_line_shape(this));
+
+    // Cache texture so we don't regenerate on every hover
+    const lineShape = get_line_shape(this);
+    this.texture_normal = this.app.renderer.generateTexture(lineShape);
+    lineShape.destroy(); // CRITICAL: destroy graphics object after texture generation
+    this.sprite.texture = this.texture_normal;
 
     const x1 = this.planetA.x;
     const y1 = this.planetA.y;
@@ -52,9 +66,9 @@ export default class Connection {
     this.sprite.rotation = angle + Math.PI / 2;
     this.sprite.hitArea = get_hit_area(this);
     this.sprite.interactive = true;
-    this.sprite.on("click", this.click.bind(this));
-    this.sprite.on("pointerover", this.pointerOver.bind(this));
-    this.sprite.on("pointerout", this.pointerOut.bind(this));
+    this.sprite.on("click", this.boundClick);
+    this.sprite.on("pointerover", this.boundPointerOver);
+    this.sprite.on("pointerout", this.boundPointerOut);
   }
 
   start_sending_ships(origin_planet) {
@@ -109,10 +123,15 @@ export default class Connection {
 
   pointerOver() {
     if (this.starSystem.draggedPlanet == null && (this.isAMyPlanetThatIsSending() || this.isBMyPlanetThatIsSending())) {
-      this.sprite.texture = this.app.renderer.generateTexture(get_hover_line_shape(this));
+      // Cache hover texture on first hover
+      if (!this.texture_hover) {
+        const hoverShape = get_hover_line_shape(this);
+        this.texture_hover = this.app.renderer.generateTexture(hoverShape);
+        hoverShape.destroy(); // CRITICAL: destroy graphics object after texture generation
+      }
+      this.sprite.texture = this.texture_hover;
       this.target.tint = COLOR_CONNECTION_HIGHLIGHT_MY;
     } else {
-      // this.sprite.scale.y = 1.5;
       this.target.scale = 2;
       this.target.tint = COLOR_CONNECTION_HIGHLIGHT;
     }
@@ -120,7 +139,7 @@ export default class Connection {
   }
 
   pointerOut() {
-    this.sprite.texture = this.app.renderer.generateTexture(get_line_shape(this));
+    this.sprite.texture = this.texture_normal;
     this.target.alpha = 0.5;
     this.target.scale = 1;
     this.target.tint = COLOR_CONNECTION;
@@ -129,5 +148,46 @@ export default class Connection {
   click() {
     if (this.isAMyPlanetThatIsSending) this.sendingA2B.stop_sending_ships();
     if (this.isBMyPlanetThatIsSending) this.sendingB2A.stop_sending_ships();
+  }
+
+  destroy() {
+    // Remove event listeners using stored bound references
+    if (this.sprite) {
+      this.sprite.off("click", this.boundClick);
+      this.sprite.off("pointerover", this.boundPointerOver);
+      this.sprite.off("pointerout", this.boundPointerOut);
+
+      // Destroy textures and their BaseTextures
+      if (this.texture_normal && this.texture_normal !== PIXI.Texture.RED) {
+        if (this.texture_normal.baseTexture) {
+          this.texture_normal.baseTexture.destroy();
+        }
+        this.texture_normal.destroy();
+      }
+      if (this.texture_hover && this.texture_hover !== PIXI.Texture.RED) {
+        if (this.texture_hover.baseTexture) {
+          this.texture_hover.baseTexture.destroy();
+        }
+        this.texture_hover.destroy();
+      }
+
+      // Remove sprite from stage and destroy
+      if (this.sprite.parent) {
+        this.sprite.parent.removeChild(this.sprite);
+      }
+      this.sprite.destroy();
+    }
+
+    // Clean up sending objects - destroy their ships
+    if (this.sendingA2B) {
+      while (this.sendingA2B.ships_queue.length > 0) {
+        this.sendingA2B.delete_last_ship();
+      }
+    }
+    if (this.sendingB2A) {
+      while (this.sendingB2A.ships_queue.length > 0) {
+        this.sendingB2A.delete_last_ship();
+      }
+    }
   }
 }

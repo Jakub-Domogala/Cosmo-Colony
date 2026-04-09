@@ -21,6 +21,9 @@ const MAP_FILES = [
 
 let selectedMap = null;
 let mapPreviews = {}; // cache for map data
+let currentApp = null; // track current PixiJS app instance
+let currentStarSystem = null; // track current star system for cleanup
+let currentTickerCallback = null; // track ticker callback for cleanup
 
 function showGameOverScreen() {
   document.getElementById("gameContainer").style.display = "none";
@@ -127,7 +130,7 @@ async function initializeMapPicker() {
 
   for (const mapFile of MAP_FILES) {
     try {
-      // Fetch and cache map data
+      // Fetch and cache map data (cache is persistent across games)
       if (!mapPreviews[mapFile]) {
         const response = await fetch(`./resource/solar_systems/${mapFile}`);
         if (!response.ok) continue;
@@ -177,10 +180,31 @@ async function initializeMapPicker() {
 }
 
 function startGame() {
-  const gameCanvas = document.getElementsByClassName("game-canvas")[0];
-  if (gameCanvas) {
-    gameCanvas.remove();
+  // Clean up previous game
+  if (currentStarSystem) {
+    currentStarSystem.destroy();
+    currentStarSystem = null;
   }
+
+  if (currentApp) {
+    // Remove ticker callback
+    if (currentTickerCallback) {
+      currentApp.ticker.remove(currentTickerCallback);
+      currentTickerCallback = null;
+    }
+    // Stop ticker
+    currentApp.ticker.stop();
+    // Destroy app - this removes canvas and all resources
+    currentApp.destroy(true, { children: true, texture: true, baseTexture: true });
+    currentApp = null;
+  }
+
+  // Clear game container
+  const gameContainer = document.getElementById("gameContainer");
+  if (gameContainer) {
+    gameContainer.innerHTML = '';
+  }
+
   const overScreen = document.getElementById("gameOverScreen");
   if (overScreen) {
     overScreen.style.display = "none";
@@ -205,8 +229,10 @@ function startGame() {
   // INIT APP
   (async () => {
     const app = await getApp();
+    currentApp = app; // Store for cleanup later
     const players = getPlayers(app, humanCount, aiCount);
     const starSystem = await getStarSystem(app, players, selectedMap);
+    currentStarSystem = starSystem; // Store for cleanup later
 
     // RUN GAME LOOP
     let speedup = 1;
@@ -215,7 +241,7 @@ function startGame() {
     let epsilon = 0.001;
     let endGame = false;
 
-    app.ticker.add((ticker) => {
+    currentTickerCallback = (ticker) => {
       elapsed += ticker.deltaTime;
       const dt = ticker.deltaMS / 1000;
       speedup = calc_gradiental_change_float(speedup, targetSpeedup, dt, 1);
@@ -240,8 +266,12 @@ function startGame() {
       if (speedup < epsilon) {
         console.log("Game over!");
         app.ticker.stop();
+        // Cleanup star system when game ends
+        starSystem.destroy();
       }
-    });
+    };
+
+    app.ticker.add(currentTickerCallback);
   })();
 }
 

@@ -60,7 +60,10 @@ export default class Sending {
   delete_last_ship() {
     if (this.ships_queue.length === 0) return;
     const ship = this.ships_queue.shift();
-    this._app.stage.removeChild(ship.sprite);
+    if (ship.sprite && ship.sprite.parent) {
+      this._app.stage.removeChild(ship.sprite);
+    }
+    ship.destroy();
   }
 
   add_ship() {

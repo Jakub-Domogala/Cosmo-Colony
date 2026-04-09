@@ -47,13 +47,15 @@ export default class Planet {
     this.this_system = system;
 
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
 
     this.sprite.interactive = true;
     this.sprite.eventMode = "dynamic";
     this.sprite.cursor = "pointer";
     this.sprite.addEventListener("pointerdown", this.onMouseDown, this);
-    this.sprite.addEventListener("pointerover", this.onMouseOver.bind(this)); // here i use bind(this) cause i want to use the planet object not the sprite
-    this.sprite.addEventListener("pointerout", this.onMouseOut.bind(this));
+    this.sprite.addEventListener("pointerover", this.onMouseOver); // here i use bind(this) cause i want to use the planet object not the sprite
+    this.sprite.addEventListener("pointerout", this.onMouseOut);
   }
 
   make_sprite() {
@@ -67,15 +69,15 @@ export default class Planet {
     this.addDebugLabel(60, 35);
 
     const borderwidth = this.r / 4;
-    this.sprite.texture = this.app.renderer.generateTexture(
-      new PIXI.Graphics()
-        .circle(0, 0, this.r - borderwidth)
-        .fill(0xffffff)
-        .stroke({
-          width: borderwidth,
-          color: 0x555555,
-        }),
-    );
+    const planetShape = new PIXI.Graphics()
+      .circle(0, 0, this.r - borderwidth)
+      .fill(0xffffff)
+      .stroke({
+        width: borderwidth,
+        color: 0x555555,
+      });
+    this.sprite.texture = this.app.renderer.generateTexture(planetShape);
+    planetShape.destroy(); // CRITICAL: destroy graphics object after texture generation
   }
 
   highlightOn() {
@@ -216,5 +218,48 @@ export default class Planet {
 
   onClick(event) {
     return;
+  }
+
+  destroy() {
+    // Remove event listeners
+    if (this.sprite) {
+      this.sprite.removeEventListener("pointerdown", this.onMouseDown);
+      this.sprite.removeEventListener("pointerover", this.onMouseOver);
+      this.sprite.removeEventListener("pointerout", this.onMouseOut);
+
+      // Destroy sprite texture and its BaseTexture
+      if (this.sprite.texture && this.sprite.texture !== PIXI.Texture.RED) {
+        if (this.sprite.texture.baseTexture) {
+          this.sprite.texture.baseTexture.destroy();
+        }
+        this.sprite.texture.destroy();
+      }
+
+      // Remove sprite from stage
+      if (this.sprite.parent) {
+        this.sprite.parent.removeChild(this.sprite);
+      }
+
+      this.sprite.destroy();
+    }
+
+    // Remove and destroy labels
+    if (this.label) {
+      if (this.label.parent) {
+        this.label.parent.removeChild(this.label);
+      }
+      this.label.destroy();
+    }
+
+    if (this.debug_label) {
+      if (this.debug_label.parent) {
+        this.debug_label.parent.removeChild(this.debug_label);
+      }
+      this.debug_label.destroy();
+    }
+
+    // Clear connections
+    this.connections_dict = {};
+    this.connected_planets = [];
   }
 }

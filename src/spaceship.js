@@ -63,9 +63,9 @@ export default class Spaceship {
     this.sprite.scale.set(1);
     this.sprite.hitArea = new PIXI.Circle(0, 0, 0);
     this.sprite.rotation = this.rotation;
-    this.sprite.texture = this.app.renderer.generateTexture(
-      this.get_ship_shape(),
-    );
+    const shipShape = this.get_ship_shape();
+    this.sprite.texture = this.app.renderer.generateTexture(shipShape);
+    shipShape.destroy(); // CRITICAL: destroy the graphics object after texture generation
   }
 
   get_ship_shape() {
@@ -126,5 +126,18 @@ export default class Spaceship {
     // update ship collisions, if true delete both ships
 
     // update planet arrival, if true delete ship and decrement planet health
+  }
+
+  destroy() {
+    if (this.sprite) {
+      if (this.sprite.texture && this.sprite.texture !== PIXI.Texture.RED) {
+        // Destroy both texture and its baseTexture
+        if (this.sprite.texture.baseTexture) {
+          this.sprite.texture.baseTexture.destroy();
+        }
+        this.sprite.texture.destroy();
+      }
+      this.sprite.destroy();
+    }
   }
 }

@@ -41,6 +41,10 @@ export default class StarSystem {
     this.newptr = new Pointer(this.app);
     this.app.stage.addChild(this.newptr.sprite);
     this.add_population_chart();
+
+    // Store bound methods for drag listeners so they can be properly removed
+    this.boundOnDragMove = this.onDragMove.bind(this);
+    this.boundOnDragEnd = this.onDragEnd.bind(this);
   }
 
   add_population_chart() {
@@ -69,8 +73,8 @@ export default class StarSystem {
     this.draggedPlanet = planet;
     this.targetPlanet = null;
     planet.highlightOn();
-    this.app.stage.on("pointermove", this.onDragMove.bind(this));
-    this.app.stage.on("pointerup", this.onDragEnd.bind(this));
+    this.app.stage.on("pointermove", this.boundOnDragMove);
+    this.app.stage.on("pointerup", this.boundOnDragEnd);
   }
 
   onDragMove(event) {
@@ -121,8 +125,8 @@ export default class StarSystem {
       move_all_here(this.draggedPlanet.owner, this.draggedPlanet, this);
     }
     this.draggedPlanet.highlightOff();
-    this.app.stage.off("pointermove", this.onDragMove);
-    this.app.stage.off("pointerup", this.onDragEnd);
+    this.app.stage.off("pointermove", this.boundOnDragMove);
+    this.app.stage.off("pointerup", this.boundOnDragEnd);
     if (this.targetPlanet) {
       this.targetPlanet.highlightOff();
       this.send_ships_if_connection(this.draggedPlanet, this.targetPlanet);
@@ -244,5 +248,49 @@ export default class StarSystem {
 
   get_planets_length() {
     return this.planets_list.length;
+  }
+
+  destroy() {
+    // Remove all stage event listeners for drag
+    this.app.stage.off("pointermove", this.boundOnDragMove);
+    this.app.stage.off("pointerup", this.boundOnDragEnd);
+
+    // Destroy all planets
+    this.planets_list.forEach(planet => {
+      planet.destroy();
+    });
+    this.planets_name2obj = {};
+    this.planets_list = [];
+
+    // Destroy all connections
+    this.connections.forEach(connection => {
+      connection.destroy();
+    });
+    this.connections = [];
+
+    // Destroy pointer
+    if (this.newptr && this.newptr.sprite) {
+      if (this.newptr.sprite.parent) {
+        this.newptr.sprite.parent.removeChild(this.newptr.sprite);
+      }
+      this.newptr.sprite.destroy();
+    }
+
+    // Destroy chart container and its children
+    if (this.chart_container) {
+      this.chart_container.children.forEach(child => {
+        child.destroy();
+      });
+      if (this.chart_container.parent) {
+        this.chart_container.parent.removeChild(this.chart_container);
+      }
+      this.chart_container.destroy();
+    }
+
+    // Clear all arrays and objects
+    this.planets_name2idx = {};
+    this.connections_matrix = [];
+    this.players_is_alive = [];
+    this.players_population = [];
   }
 }
