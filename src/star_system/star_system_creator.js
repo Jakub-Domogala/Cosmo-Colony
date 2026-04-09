@@ -65,7 +65,6 @@ function createConnections(starSystem, connections) {
 }
 
 function createPlanets(starSystem, planets) {
-  let player_idx = 0;
   let occupied_count = 0;
   for (let i = 0; i < planets.length; i++) {
     if (planets[i].occupied) occupied_count++;
@@ -73,18 +72,45 @@ function createPlanets(starSystem, planets) {
   occupied_count =
     Math.floor(occupied_count / starSystem.players.length) *
     starSystem.players.length;
+
+  // Mark extra occupied planets as unoccupied
+  let excess = 0;
   for (let i = 0; i < planets.length; i++) {
     if (planets[i].occupied) {
-      occupied_count--;
-      if (occupied_count < 0) {
+      if (excess < occupied_count) {
+        excess++;
+      } else {
         planets[i].occupied = false;
       }
     }
-    let player_assign = null;
-    if (starSystem.players.length > 0 && planets[i].occupied) {
-      player_assign = starSystem.players[player_idx];
-      player_idx = (player_idx + 1) % starSystem.players.length;
+  }
+
+  // Collect occupied planet indices
+  const occupied_planet_indices = [];
+  for (let i = 0; i < planets.length; i++) {
+    if (planets[i].occupied) {
+      occupied_planet_indices.push(i);
     }
+  }
+
+  // Shuffle occupied planets randomly
+  for (let i = occupied_planet_indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [occupied_planet_indices[i], occupied_planet_indices[j]] = [occupied_planet_indices[j], occupied_planet_indices[i]];
+  }
+
+  // Assign shuffled players to shuffled planets
+  let player_idx = 0;
+  const player_assignment = new Map(); // Track which planets are assigned to which players
+
+  for (const planet_idx of occupied_planet_indices) {
+    player_assignment.set(planet_idx, starSystem.players[player_idx]);
+    player_idx = (player_idx + 1) % starSystem.players.length;
+  }
+
+  // Create planets with randomized player assignment
+  for (let i = 0; i < planets.length; i++) {
+    let player_assign = player_assignment.get(i) || null;
 
     let new_planet = new Planet(
       planets[i].name,
